@@ -4,7 +4,6 @@ import { PriceUtils } from '../../utils/price-utils';
 
 test.describe('Cart → Complete Checkout with Correct Calculation', () => {
   test.beforeEach(async ({ config, managerPage }) => {
-    //await managerPage.onLoginPage().login(config.standard_user, config.valid_password);
     await managerPage.onLoginPage().goToOtherPage(config.url + '/inventory.html');
   })
 
@@ -218,19 +217,6 @@ test.describe('Cart → Complete Checkout with Correct Calculation', () => {
       // Verify success
       const completeMessage = await checkoutPage.getCompleteMessage();
       expect(completeMessage).toContain('Thank you for your order');
-      /*
-      // Fill info
-      await checkoutPage.fillCheckoutInfo('John', 'Doe', '12345');
-      await checkoutPage.continue();
-
-      // Verify: Checkout overview shows 2 items (not 3)
-      const overviewItemCount = await checkoutPage.getCartItemCount();
-      //expect(overviewItemCount).toBe(2);
-
-      // Verify: Subtotal matches
-      const overviewSubtotal = await checkoutPage.getSubtotal();
-      //expect(overviewSubtotal).toContain(subtotal.toString().substring(0, 5));
-      */
     });
   });
 });

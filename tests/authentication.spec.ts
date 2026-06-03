@@ -3,7 +3,7 @@ import { test } from '../fixtures';
 import { ManagerPage } from '../pages/ManagerPage';
 import { LoginPage } from '../pages/LoginPage';
 import { InventoryPage } from '../pages/InventoryPage';
-import { config } from 'node:process';
+//import { config } from 'node:process';
 
 const INVALID_PASSWORD = 'wrong_password';
 

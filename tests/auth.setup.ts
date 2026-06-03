@@ -5,9 +5,6 @@ import { InventoryPage } from '../pages/InventoryPage';
 import fs from 'fs';
 import path from 'path';
 
-const VALID_USERNAME = 'standard_user';
-const VALID_PASSWORD = 'secret_sauce';
-
 setup('Authenticate by UI', async ({ config, page }) => {
 
   // 1. Resolve an absolute path to ensure consistency

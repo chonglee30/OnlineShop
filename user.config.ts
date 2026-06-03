@@ -1,6 +1,6 @@
 
 const config = {
-  url: 'https://qa-challenge.codesubmit.io',
+  url: 'https://www.saucedemo.com',
   standard_user: 'standard_user',
   locked_out_user: 'locked_out_user',
   problem_user: 'problem_user',
