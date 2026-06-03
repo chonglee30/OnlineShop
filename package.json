@@ -1,0 +1,24 @@
+{
+  "name": "prioritization-automation-fptuhj",
+  "version": "1.0.0",
+  "description": "Your assignment is to write automated test cases for an online shop, focusing on the flows you consider most critical.",
+  "main": "index.js",
+  "scripts": {
+    "test:all": "npx playwright test",
+    "test:auth-ui": "npx playwright test --project=chromium --project=firefox --project=webkit",
+    "test:cart": "npx playwright test --project=chromium-auth --project=firefox-auth --project=webkit-auth",
+    "test:chromium-only": "npx playwright test --project=chromium --project=chromium-auth"
+  },
+  "repository": {
+    "type": "git",
+    "url": "http://impact-krgyqx@git.codesubmit.io/impact/prioritization-automation-fptuhj"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "devDependencies": {
+    "@playwright/test": "^1.60.0",
+    "@types/node": "^25.9.1"
+  }
+}
