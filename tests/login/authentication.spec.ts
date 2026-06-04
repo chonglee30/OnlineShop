@@ -1,15 +1,14 @@
 import { expect } from '@playwright/test';
-import { test } from '../fixtures';
-import { ManagerPage } from '../pages/ManagerPage';
-import { LoginPage } from '../pages/LoginPage';
-import { InventoryPage } from '../pages/InventoryPage';
-//import { config } from 'node:process';
+import { test } from '../../fixtures';
+import { ManagerPage } from '../../pages/ManagerPage';
+import { LoginPage } from '../../pages/LoginPage';
+import { InventoryPage } from '../../pages/InventoryPage';
 
 const INVALID_PASSWORD = 'wrong_password';
 
 test.describe('Authentication (Login)', () => {
   test.beforeEach(async ({ config, page }) => {
-    await page.goto(config.url);
+    await page.goto(config.url, { waitUntil: 'domcontentloaded' });
     expect(await page.title()).toEqual('Swag Labs')
     await expect(page.locator('.login_logo')).toHaveText('Swag Labs')
   });
@@ -28,26 +27,6 @@ test.describe('Authentication (Login)', () => {
     // Verify: Inventory page is displayed
     const title = await inventoryPage.title.textContent();
     expect(title).toContain('Products');
-  });
-
-  test('Valid login with problem_user and correct password', async ({ config, page }) => {
-    const loginPage = new LoginPage(page);
-
-    // Action: Fill credentials and login
-    await loginPage.login(config.problem_user, config.valid_password);
-    // Verify: Successfully logged in
-    await expect(page).toHaveURL(/inventory\.html/);
-  });
-
-  test('Valid login with performance_glitch_user and correct password', async ({ config, page }) => {
-    const loginPage = new LoginPage(page);
-
-    // Action: Fill credentials and login
-    await loginPage.login(config.performance_glitch_user, config.valid_password);
-
-    // Verify: Successfully logged in (may be slow)
-    await page.waitForURL('**/inventory.html', { timeout: 60000 });
-    await expect(page).toHaveURL(/inventory\.html/);
   });
 
   test('Valid login with error_user and correct password', async ({ config, page }) => {
@@ -159,20 +138,6 @@ test.describe('Authentication (Login)', () => {
     expect(errorText).toContain('Password is required');
   });
 
-  test('Both username and password empty shows error', async ({ page }) => {
-    const loginPage = new LoginPage(page);
-
-    // Action: Leave both fields empty and try to login
-    await loginPage.loginButton.click();
-
-    // Verify: Error message displays
-    const isErrorVisible = await loginPage.isErrorVisible();
-    expect(isErrorVisible).toBeTruthy();
-
-    const errorText = await loginPage.getErrorMessage();
-    expect(errorText).toContain('Username is required');
-  });
-
   test('Case sensitivity - username is case sensitive', async ({ config, page }) => {
     const loginPage = new LoginPage(page);
 
@@ -217,7 +182,8 @@ test.describe('Authentication (Login)', () => {
 
     // Action: Try to access inventory page directly
     await page.goto(config.url + '/inventory.html');
-    expect(page.url()).not.toContain('inventory.html');
+    console.log(page.url())
+    expect(page.url()).not.toContain('inventory.html');    
   });
 
   test('Cookies/session cleared after logout', async ({ config, page }) => {

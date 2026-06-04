@@ -31,6 +31,11 @@ export default defineConfig({
     /* Collect trace when retrying the failed test. See https://playwright.dev/docs/trace-viewer */
     trace: 'on-first-retry',
   },
+  expect: {
+    toHaveScreenshot: {
+      pathTemplate: `visual-snapshots/{testFileName}/{arg}{ext}`,
+    }
+  },
 
   /* Configure projects for major browsers */
   projects: [
@@ -40,7 +45,7 @@ export default defineConfig({
       use: {
         ...devices['Desktop Chrome']
       },
-      testMatch: /authentication\.spec\.ts/,
+      testDir: './tests/login', // Scopes this project to the login folder
     },
 
     {
@@ -60,7 +65,7 @@ export default defineConfig({
     {
       name: 'firefox',
       use: { ...devices['Desktop Firefox'] },
-      testMatch: /authentication\.spec\.ts/,
+      testDir: './tests/login', // Scopes this project to the login folder
     },
 
     {
@@ -73,7 +78,7 @@ export default defineConfig({
     {
       name: 'webkit',
       use: { ...devices['Desktop Safari'] },
-      testMatch: /authentication\.spec\.ts/,
+      testDir: './tests/login', // Scopes this project to the login folder
     },
 
     /* Test against mobile viewports. */
