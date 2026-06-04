@@ -10,14 +10,6 @@ export class CartPage extends BasePage {
   readonly continueShoppingButton: Locator;
   readonly itemQuantities: Locator;
 
-  // Remove buttons for each product
-  readonly removeBackpackButton: Locator;
-  readonly removeBikeLightButton: Locator;
-  readonly removeBoltShirtButton: Locator;
-  readonly removeFleeceJacketButton: Locator;
-  readonly removeOnesieButton: Locator;
-  readonly removeTShirtButton: Locator;
-
   // Item details
   readonly inventoryItemNames: Locator;
   readonly inventoryItemPrices: Locator;
@@ -33,42 +25,9 @@ export class CartPage extends BasePage {
     this.continueShoppingButton = page.getByRole('button', { name: 'Continue Shopping' });
     this.itemQuantities = page.locator('[data-test="item-quantity"]');
 
-    // Remove buttons
-    this.removeBackpackButton = page.locator('[data-test="remove-sauce-labs-backpack"]');
-    this.removeBikeLightButton = page.locator('[data-test="remove-sauce-labs-bike-light"]');
-    this.removeBoltShirtButton = page.locator('[data-test="remove-sauce-labs-bolt-t-shirt"]');
-    this.removeFleeceJacketButton = page.locator('[data-test="remove-sauce-labs-fleece-jacket"]');
-    this.removeOnesieButton = page.locator('[data-test="remove-sauce-labs-onesie"]');
-    this.removeTShirtButton = page.locator('[data-test="remove-test.allthethings()-t-shirt-(red)"]');
-
     // Item details
     this.inventoryItemNames = page.locator('[data-test="inventory-item-name"]');
     this.inventoryItemPrices = page.locator('[data-test="inventory-item-price"]');
-  }
-
-  // Remove:
-  getRemoveBackpackButton(): Locator {
-    return this.removeBackpackButton;
-  }
-
-  getRemoveBikeLightButton(): Locator {
-    return this.removeBikeLightButton;
-  }
-
-  getRemoveBoltShirtButton(): Locator {
-    return this.removeBoltShirtButton;
-  }
-
-  getRemoveFleeceJacketButton(): Locator {
-    return this.removeFleeceJacketButton;
-  }
-
-  getRemoveOnesieButton(): Locator {
-    return this.removeOnesieButton;
-  }
-
-  getRemoveTShirtButton(): Locator {
-    return this.removeTShirtButton;
   }
 
   async getCartItemCount(): Promise<number> {
@@ -79,8 +38,15 @@ export class CartPage extends BasePage {
     return (await this.pageTitle.textContent()) || '';
   }
 
-  async removeItem(removeButton: Locator): Promise<void> {
-    await removeButton.click();
+  async removeItemFromCart(itemName: string): Promise<void> {
+    const itemContainer = this.page.locator('.cart_item', { hasText: itemName });
+    await itemContainer.getByRole('button', { name: 'Remove' }).click();
+  }
+
+  getRemoveButton(itemName: string): Locator {
+    return this.page
+      .locator('.cart_item', { hasText: itemName })
+      .getByRole('button', { name: 'Remove' });
   }
 
   async checkout(): Promise<void> {

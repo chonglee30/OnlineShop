@@ -13,22 +13,14 @@ test.describe('Cart → Complete Checkout with Correct Calculation', () => {
       const inventoryPage = managerPage.onInventoryPage();
       const cartPage = managerPage.onCartPage();
 
-      // TODO: remove this line once pass
-      // await inventoryPage.addToCart(inventoryPage.getAddBackpackButton());
-      //await inventoryPage.addToCart(inventoryPage.getAddBikeLightButton());
-
       await inventoryPage.addItemToCart('Sauce Labs Backpack');
-      await inventoryPage.addItemToCart('Sauce Labs Bike Light'); 
-      
+      await inventoryPage.addItemToCart('Sauce Labs Bike Light');
+
       // Verify: Cart badge shows "2"
       const badge = await inventoryPage.getCartBadgeCount();
       expect(badge).toContain('2');
-
-      // Action: Navigate to cart
       await inventoryPage.openCart();
       const pageTitle = await cartPage.getPageTitle();
-
-
       expect(pageTitle).toBe('Your Cart');
 
       const isVisible = await cartPage.isContinueShoppingVisible();
@@ -54,14 +46,9 @@ test.describe('Cart → Complete Checkout with Correct Calculation', () => {
       const checkoutPage = managerPage.onCheckoutPage();
 
       // Add multiple items
-      // Add items to cart
-     // await inventoryPage.addToCart(inventoryPage.getAddBackpackButton()); // $29.99
-     // await inventoryPage.addToCart(inventoryPage.getAddBikeLightButton()); // $9.99
-     // await inventoryPage.addToCart(inventoryPage.getAddBoltShirtButton()); // $15.99
-
-       await inventoryPage.addItemToCart('Sauce Labs Backpack');
-       await inventoryPage.addItemToCart('Sauce Labs Bike Light');
-       await inventoryPage.addItemToCart('Sauce Labs Bolt T-Shirt');
+      await inventoryPage.addItemToCart('Sauce Labs Backpack'); // $29.99
+      await inventoryPage.addItemToCart('Sauce Labs Bike Light'); // $9.99
+      await inventoryPage.addItemToCart('Sauce Labs Bolt T-Shirt'); // $15.99
 
       const backpackItem = await inventoryPage.getInventoryItems().filter({ hasText: 'Sauce Labs Backpack' });
       const backpackPrice = await inventoryPage.getInventoryItemPrice(backpackItem);
@@ -108,10 +95,10 @@ test.describe('Cart → Complete Checkout with Correct Calculation', () => {
       const overviewSubtotal = await checkoutPage.getSubtotal();
       expect(overviewSubtotal).toContain(`$${subtotal.toFixed(2)}`);
       const tax = await checkoutPage.getTax()
-      
+
       const total = await checkoutPage.getTotal();
       console.log(`Calculated total: ${total}`);
-      
+
       // Verify total is correct (subtotal + tax)
       const expectedTotal = subtotal + PriceUtils.parsePrice(tax);
       expect(total).toContain(`$${expectedTotal.toFixed(2)}`);
@@ -131,22 +118,18 @@ test.describe('Cart → Complete Checkout with Correct Calculation', () => {
       const inventoryPage = managerPage.onInventoryPage();
       const cartPage = managerPage.onCartPage();
 
-      //await inventoryPage.addToCart(inventoryPage.getAddBackpackButton());
       await inventoryPage.addItemToCart('Sauce Labs Backpack');
-
-      // Navigate to cart
+      await expect(inventoryPage.getRemoveButton('Sauce Labs Backpack')).toBeVisible();
       await inventoryPage.openCart();
 
       // Verify: Item is in cart
-      let itemCount = await cartPage.getCartItemCount();
-      expect(itemCount).toBe(1);
-
+      expect(await cartPage.getCartItemCount()).toBe(1);
+    
       // Action: Remove all items
-      await cartPage.removeItem(cartPage.getRemoveBackpackButton());
+      await cartPage.removeItemFromCart('Sauce Labs Backpack');
 
       // Verify: Empty cart state
-      itemCount = await cartPage.getCartItemCount();
-      expect(itemCount).toBe(0);
+      expect(await cartPage.getCartItemCount()).toBe(0);
     });
 
     test('End-to-end remove cart flow - add multiple, remove some, checkout remainder', async ({ managerPage }) => {
@@ -165,13 +148,13 @@ test.describe('Cart → Complete Checkout with Correct Calculation', () => {
       expect(badge).toContain('3');
 
       // Verify: Remove buttons are visible for added items
-      expect(await inventoryPage.getRemoveFleeceJacketButton().isVisible()).toBeTruthy();
-      expect(await inventoryPage.getRemoveOnesieButton().isVisible()).toBeTruthy();
-      expect(await inventoryPage.getRemoveTShirtButton().isVisible()).toBeTruthy();
+      await expect(inventoryPage.getRemoveButton('Sauce Labs Fleece Jacket')).toBeVisible();
+      await expect(inventoryPage.getRemoveButton('Sauce Labs Onesie')).toBeVisible();
+      await expect(inventoryPage.getRemoveButton('Test.allTheThings() T-Shirt (Red)')).toBeVisible();
 
       // Action: Remove item
-      await inventoryPage.removeFromCart(inventoryPage.getRemoveTShirtButton());
-      //expect(await inventoryPage.getAddTShirtButton().isVisible()).toBeTruthy();
+      await inventoryPage.removeItemFromCart('Test.allTheThings() T-Shirt (Red)');
+      await expect(inventoryPage.getAddButton('Test.allTheThings() T-Shirt (Red)')).toBeVisible();
       expect(await inventoryPage.getCartBadgeCount()).toContain('2');
 
       const flleceJacketItem = await inventoryPage.getInventoryItems().filter({ hasText: 'Sauce Labs Fleece Jacket' });

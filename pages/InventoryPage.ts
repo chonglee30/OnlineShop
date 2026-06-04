@@ -11,22 +11,6 @@ export class InventoryPage extends BasePage {
   readonly logoutLink: Locator;
   readonly aboutLink: Locator;
 
-  // Product add to cart buttons
-  // readonly addBackpackButton: Locator;
-  // readonly addBikeLightButton: Locator;
-  // readonly addBoltShirtButton: Locator;
-  // readonly addFleeceJacketButton: Locator;
-  // readonly addOnesieButton: Locator;
-  // readonly addTShirtButton: Locator;
-
-  // Product remove buttons
-  readonly removeBackpackButton: Locator;
-  readonly removeBikeLightButton: Locator;
-  readonly removeBoltShirtButton: Locator;
-  readonly removeFleeceJacketButton: Locator;
-  readonly removeOnesieButton: Locator;
-  readonly removeTShirtButton: Locator;
-
   // Inventory item elements
   readonly inventoryItems: Locator;
   readonly inventoryItemPrices: Locator;
@@ -41,22 +25,6 @@ export class InventoryPage extends BasePage {
     this.burgerMenuBtn = page.locator('[id="react-burger-menu-btn"]');
     this.logoutLink = page.locator('[id="logout_sidebar_link"]');
     this.aboutLink = page.locator('[id="about_sidebar_link"]');
-
-    // Add to cart buttons
-    // this.addBackpackButton = page.locator('[data-test="add-to-cart-sauce-labs-backpack"]');
-    // this.addBikeLightButton = page.locator('[data-test="add-to-cart-sauce-labs-bike-light"]');
-    // this.addBoltShirtButton = page.locator('[data-test="add-to-cart-sauce-labs-bolt-t-shirt"]');
-    // this.addFleeceJacketButton = page.locator('[data-test="add-to-cart-sauce-labs-fleece-jacket"]');
-    // this.addOnesieButton = page.locator('[data-test="add-to-cart-sauce-labs-onesie"]');
-    // this.addTShirtButton = page.locator('[data-test="add-to-cart-test.allthethings()-t-shirt-(red)"]');
-
-    // Remove buttons
-    this.removeBackpackButton = page.locator('[data-test="remove-sauce-labs-backpack"]');
-    this.removeBikeLightButton = page.locator('[data-test="remove-sauce-labs-bike-light"]');
-    this.removeBoltShirtButton = page.locator('[data-test="remove-sauce-labs-bolt-t-shirt"]');
-    this.removeFleeceJacketButton = page.locator('[data-test="remove-sauce-labs-fleece-jacket"]');
-    this.removeOnesieButton = page.locator('[data-test="remove-sauce-labs-onesie"]');
-    this.removeTShirtButton = page.locator('[data-test="remove-test.allthethings()-t-shirt-(red)"]');
 
     // General inventory elements
     this.inventoryItems = page.locator('[data-test="inventory-item"]');
@@ -74,54 +42,16 @@ export class InventoryPage extends BasePage {
     return this.inventoryItems;
   }
 
-  // Add: 
-  // getAddBackpackButton(): Locator {
-  //   return this.addBackpackButton;
-  // }
-
-  // getAddBikeLightButton(): Locator {
-  //   return this.addBikeLightButton;
-  // }
-
-  // getAddBoltShirtButton(): Locator {
-  //   return this.addBoltShirtButton;
-  // }
-
-  // getAddFleeceJacketButton(): Locator {
-  //   return this.addFleeceJacketButton;
-  // }
-
-  // getAddOnesieButton(): Locator {
-  //   return this.addOnesieButton;
-  // }
-
-  // getAddTShirtButton(): Locator {
-  //   return this.addTShirtButton;
-  // }
-
-  // Remove:
-  getRemoveBackpackButton(): Locator {
-    return this.removeBackpackButton;
+  getAddButton(itemName: string): Locator {
+    return this.page
+      .locator('.inventory_item', { hasText: itemName })
+      .getByRole('button', { name: 'Add to cart' });
   }
 
-  getRemoveBikeLightButton(): Locator {
-    return this.removeBikeLightButton;
-  }
-
-  getRemoveBoltShirtButton(): Locator {
-    return this.removeBoltShirtButton;
-  }
-
-  getRemoveFleeceJacketButton(): Locator {
-    return this.removeFleeceJacketButton;
-  }
-
-  getRemoveOnesieButton(): Locator {
-    return this.removeOnesieButton;
-  }
-
-  getRemoveTShirtButton(): Locator {
-    return this.removeTShirtButton;
+  getRemoveButton(itemName: string): Locator {
+    return this.page
+      .locator('.inventory_item', { hasText: itemName })
+      .getByRole('button', { name: 'Remove' });
   }
 
   // addItemToCart:
@@ -136,21 +66,10 @@ export class InventoryPage extends BasePage {
     await itemContainer.getByRole('button', { name: 'Remove' }).click();
   }
 
-  // TODO: Remove this function - consideration
-  // async addToCart(productButton: Locator): Promise<void> {
-  //   await productButton.click();
-  // }
-
-  // TODO: Remove this function - consideration
-  async removeFromCart(productButton: Locator): Promise<void> {
-    await productButton.click();
-  }
-
   async getCartBadgeCount(): Promise<string | null> {
     await this.shoppingCartBadge.waitFor({
       state: 'visible'
     });
-
     return await this.shoppingCartBadge.textContent();
   }
 
