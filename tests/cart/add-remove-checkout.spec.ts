@@ -43,7 +43,7 @@ test.describe('Cart → Complete Checkout with Correct Calculation', () => {
       // Setup
       const inventoryPage = managerPage.onInventoryPage();
       const cartPage = managerPage.onCartPage();
-      const checkoutPage = managerPage.onCheckoutPage();
+      const checkout = managerPage.onCheckout();
 
       // Add multiple items
       await inventoryPage.addItemToCart('Sauce Labs Backpack'); // $29.99
@@ -62,8 +62,6 @@ test.describe('Cart → Complete Checkout with Correct Calculation', () => {
       const boltShirtPrice = await inventoryPage.getInventoryItemPrice(boltShirtItem);
       console.log(`The price is: ${boltShirtPrice}`);
 
-      // const badge = await inventoryPage.getCartBadgeCount();
-      // expect(badge).toContain('3');
       let badge = await inventoryPage.getHeader().getCart().getCartBadgeCount();
       expect(badge).toEqual(3);
 
@@ -85,22 +83,22 @@ test.describe('Cart → Complete Checkout with Correct Calculation', () => {
       await cartPage.checkout();
 
       // Fill checkout info
-      await checkoutPage.fillCheckoutInfo('Test', 'User', '99999');
-      await checkoutPage.continue();
+      await checkout.stepOne.fillCheckoutInfo('Test', 'User', '99999');
+      await checkout.stepOne.continue();
 
       // Verify overview page shows correct items
-      const overviewCount = await checkoutPage.getCartItemCount();
+      const overviewCount = await checkout.stepTwo.getCartItemCount();
       expect(overviewCount).toBe(3);
 
       const subtotal = PriceUtils.parsePrice(backpackPrice) + PriceUtils.parsePrice(bikeLightPrice) + PriceUtils.parsePrice(boltShirtPrice);
       console.log(`Calculated subtotal: ${subtotal}`);
 
       // Verify subtotal on overview page
-      const overviewSubtotal = await checkoutPage.getSubtotal();
+      const overviewSubtotal = await checkout.stepTwo.getSubtotal();
       expect(overviewSubtotal).toContain(`$${subtotal.toFixed(2)}`);
-      const tax = await checkoutPage.getTax()
+      const tax = await checkout.stepTwo.getTax();
 
-      const total = await checkoutPage.getTotal();
+      const total = await checkout.stepTwo.getTotal();
       console.log(`Calculated total: ${total}`);
 
       // Verify total is correct (subtotal + tax)
@@ -108,13 +106,13 @@ test.describe('Cart → Complete Checkout with Correct Calculation', () => {
       expect(total).toContain(`$${expectedTotal.toFixed(2)}`);
 
       // Complete purchase
-      await checkoutPage.finish();
+      await checkout.stepTwo.finish();
 
       // Verify success
-      const completeMessage = await checkoutPage.getCompleteMessage();
+      const completeMessage = await checkout.complete.getCompleteMessage();
       expect(completeMessage).toContain('Thank you for your order');
 
-      badge = await checkoutPage.getHeader().getCart().getCartBadgeCount();
+      badge = await checkout.complete.getHeader().getCart().getCartBadgeCount();
       expect(badge).toEqual(0);
     });
   });
@@ -145,7 +143,7 @@ test.describe('Cart → Complete Checkout with Correct Calculation', () => {
       // Setup: Login
       const inventoryPage = managerPage.onInventoryPage();
       const cartPage = managerPage.onCartPage();
-      const checkoutPage = managerPage.onCheckoutPage();
+      const checkout = managerPage.onCheckout();
 
       // Add multiple items
       await inventoryPage.addItemToCart('Sauce Labs Fleece Jacket'); //49.99
@@ -190,23 +188,23 @@ test.describe('Cart → Complete Checkout with Correct Calculation', () => {
       await cartPage.checkout();
 
       // Fill info
-      await checkoutPage.fillCheckoutInfo('John', 'Doe', '12345');
-      await checkoutPage.continue();
+      await checkout.stepOne.fillCheckoutInfo('John', 'Doe', '12345');
+      await checkout.stepOne.continue();
 
       // Verify overview page shows correct items
-      const overviewCount = await checkoutPage.getCartItemCount();
+      const overviewCount = await checkout.stepTwo.getCartItemCount();
       expect(overviewCount).toBe(2);
 
       const subtotal = PriceUtils.parsePrice(flleceJacketPrice) + PriceUtils.parsePrice(onesiePrice);
       console.log(`Calculated subtotal: ${subtotal}`);
 
       // Verify subtotal on overview page
-      const overviewSubtotal = await checkoutPage.getSubtotal();
+      const overviewSubtotal = await checkout.stepTwo.getSubtotal();
       expect(overviewSubtotal).toContain(`$${subtotal.toFixed(2)}`);
-      const tax = await checkoutPage.getTax()
+      const tax = await checkout.stepTwo.getTax()
       console.log(`Calculated tax: ${tax}`);
 
-      const total = await checkoutPage.getTotal();
+      const total = await checkout.stepTwo.getTotal();
       console.log(`Calculated total: ${total}`);
 
       // Verify total is correct (subtotal + tax)
@@ -214,13 +212,13 @@ test.describe('Cart → Complete Checkout with Correct Calculation', () => {
       expect(total).toContain(`$${expectedTotal.toFixed(2)}`);
 
       // Complete purchase
-      await checkoutPage.finish();
+      await checkout.stepTwo.finish();
 
       // Verify success
-      const completeMessage = await checkoutPage.getCompleteMessage();
+      const completeMessage = await checkout.complete.getCompleteMessage();
       expect(completeMessage).toContain('Thank you for your order');
 
-      badge = await checkoutPage.getHeader().getCart().getCartBadgeCount();
+      badge = await checkout.complete.getHeader().getCart().getCartBadgeCount();
       expect(badge).toEqual(0);
     });
   });

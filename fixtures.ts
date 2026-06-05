@@ -1,5 +1,5 @@
 import {test as base } from '@playwright/test'
-import { ManagerPage } from './pages/ManagerPage';
+import { ManagerPage } from './pages/manager/ManagerPage';
 import { config } from './user.config';
 
 export type TestOptions = {
