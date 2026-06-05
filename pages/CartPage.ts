@@ -1,8 +1,10 @@
 import { Page, Locator } from '@playwright/test';
 import { BasePage } from './BasePage';
+import { BurgerMenu } from './components/BurgerMenu';
 
 export class CartPage extends BasePage {
   readonly pageTitle: Locator;
+  private readonly burgerMenu: BurgerMenu;
   readonly cartItems: Locator;
   readonly cartListItems: Locator;
 
@@ -17,6 +19,7 @@ export class CartPage extends BasePage {
   constructor(page: Page) {
     super(page);
     this.pageTitle = page.locator('[data-test="title"]');
+    this.burgerMenu = new BurgerMenu(page);
 
     this.cartItems = page.locator('[data-test="cart-item"]');
     this.cartListItems = page.locator('[data-test="cart-list"] [data-test="inventory-item"]');
@@ -38,6 +41,10 @@ export class CartPage extends BasePage {
     return (await this.pageTitle.textContent()) || '';
   }
 
+  getBurgerMenu(): BurgerMenu {
+    return this.burgerMenu;
+  }
+  
   async removeItemFromCart(itemName: string): Promise<void> {
     const itemContainer = this.page.locator('.cart_item', { hasText: itemName });
     await itemContainer.getByRole('button', { name: 'Remove' }).click();

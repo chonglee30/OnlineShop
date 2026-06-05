@@ -1,15 +1,14 @@
 import { Page, Locator } from '@playwright/test';
 import { expect } from '@playwright/test';
 import { BasePage } from './BasePage';
+import { BurgerMenu } from './components/BurgerMenu';
 
 export class InventoryPage extends BasePage {
   readonly title: Locator;
   readonly shoppingCartLink: Locator;
   readonly shoppingCartBadge: Locator;
   readonly productSortContainer: Locator;
-  readonly burgerMenuBtn: Locator;
-  readonly logoutLink: Locator;
-  readonly aboutLink: Locator;
+  private readonly burgerMenu: BurgerMenu;
 
   // Inventory item elements
   readonly inventoryItems: Locator;
@@ -19,12 +18,10 @@ export class InventoryPage extends BasePage {
   constructor(page: Page) {
     super(page)
     this.title = page.locator('[data-test="title"]');
+    this.burgerMenu = new BurgerMenu(page);
     this.shoppingCartLink = page.locator('[data-test="shopping-cart-link"]');
     this.shoppingCartBadge = page.locator('[data-test="shopping-cart-badge"]');
     this.productSortContainer = page.locator('[data-test="product-sort-container"]');
-    this.burgerMenuBtn = page.locator('[id="react-burger-menu-btn"]');
-    this.logoutLink = page.locator('[id="logout_sidebar_link"]');
-    this.aboutLink = page.locator('[id="about_sidebar_link"]');
 
     // General inventory elements
     this.inventoryItems = page.locator('[data-test="inventory-item"]');
@@ -84,19 +81,8 @@ export class InventoryPage extends BasePage {
     await this.shoppingCartLink.click();
   }
 
-  async openBurgerMenu(): Promise<void> {
-    await expect(this.burgerMenuBtn).toBeVisible();
-    await this.burgerMenuBtn.click({ force: true });
-  }
-
-  async logout(): Promise<void> {
-    await this.openBurgerMenu();
-    await this.logoutLink.click();
-  }
-
-  async clickAbout(): Promise<void> {
-    await this.openBurgerMenu();
-    await this.aboutLink.click();
+  getBurgerMenu(): BurgerMenu {
+    return this.burgerMenu;
   }
 
   async isPageLoaded(): Promise<boolean> {

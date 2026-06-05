@@ -49,7 +49,7 @@ test.describe('Authentication (Login)', () => {
   });
 
   // ========== LOCKED OUT USER ==========
-  test('Locked out user cannot login even with correct password', async ({ config,page }) => {
+  test('Locked out user cannot login even with correct password', async ({ config, page }) => {
     const loginPage = new LoginPage(page);
 
     // Action: Attempt to login with locked_out_user
@@ -177,13 +177,12 @@ test.describe('Authentication (Login)', () => {
     await page.waitForURL('**/inventory.html');
 
     // Logout
-    await inventoryPage.logout();
-    //await page.waitForURL('**/index.html');
+    await inventoryPage.getBurgerMenu().logout();
 
     // Action: Try to access inventory page directly
     await page.goto(config.url + '/inventory.html');
     console.log(page.url())
-    expect(page.url()).not.toContain('inventory.html');    
+    expect(page.url()).not.toContain('inventory.html');
   });
 
   test('Cookies/session cleared after logout', async ({ config, page }) => {
@@ -196,9 +195,7 @@ test.describe('Authentication (Login)', () => {
 
     // Get session token from storage
     const sessionBefore = await page.evaluate(() => sessionStorage.getItem('session_id'));
-
-    // Logout
-    await inventoryPage.logout();
+    await inventoryPage.getBurgerMenu().logout();
 
     // Verify: Session cleared
     const sessionAfter = await page.evaluate(() => sessionStorage.getItem('session_id'));
