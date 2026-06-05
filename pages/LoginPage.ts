@@ -1,7 +1,9 @@
 import { Page, Locator, expect } from '@playwright/test';
 import { BasePage } from './BasePage';
+import { Logo } from './components/Logo';
 
 export class LoginPage extends BasePage {
+  readonly logo: Logo;
   readonly usernameInput: Locator;
   readonly passwordInput: Locator;
   readonly loginButton: Locator;
@@ -10,7 +12,7 @@ export class LoginPage extends BasePage {
 
   constructor(page: Page) {
     super(page);
-
+    this.logo = new Logo(this.page.locator('.login_logo'));
     this.usernameInput = page.getByPlaceholder('Username');
     this.passwordInput = page.getByPlaceholder('Password');
     this.loginButton = page.getByRole('button', { name: 'Login' });
@@ -23,6 +25,7 @@ export class LoginPage extends BasePage {
     await this.page.goto(`${url}`);
     expect(await this.page.title()).toEqual('Swag Labs')
     await expect(this.page.locator('.login_logo')).toHaveText('Swag Labs')
+    await expect(this.logo.getLocator()).toHaveText('Swag Labs')
   }
 
   async goToOtherPage(locator: string) {

@@ -10,7 +10,6 @@ export type TestOptions = {
 export const test = base.extend<TestOptions>({
   managerPage: async ({ page }, use) => {
     const managerPage = new ManagerPage(page);
-    //await page.goto('/');
     await managerPage.onLoginPage().goToLoginPage(config.url);
     await use(managerPage);
   },

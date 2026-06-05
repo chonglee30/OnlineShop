@@ -177,7 +177,7 @@ test.describe('Authentication (Login)', () => {
     await page.waitForURL('**/inventory.html');
 
     // Logout
-    await inventoryPage.getBurgerMenu().logout();
+    await inventoryPage.getHeader().getBurgerMenu().logout();
 
     // Action: Try to access inventory page directly
     await page.goto(config.url + '/inventory.html');
@@ -195,7 +195,7 @@ test.describe('Authentication (Login)', () => {
 
     // Get session token from storage
     const sessionBefore = await page.evaluate(() => sessionStorage.getItem('session_id'));
-    await inventoryPage.getBurgerMenu().logout();
+    await inventoryPage.getHeader().getBurgerMenu().logout();
 
     // Verify: Session cleared
     const sessionAfter = await page.evaluate(() => sessionStorage.getItem('session_id'));

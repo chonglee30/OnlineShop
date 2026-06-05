@@ -16,10 +16,10 @@ test.describe('Cart → Complete Checkout with Correct Calculation', () => {
       await inventoryPage.addItemToCart('Sauce Labs Backpack');
       await inventoryPage.addItemToCart('Sauce Labs Bike Light');
 
-      // Verify: Cart badge shows "2"
-      const badge = await inventoryPage.getCartBadgeCount();
-      expect(badge).toContain('2');
-      await inventoryPage.openCart();
+      let badge = await inventoryPage.getHeader().getCart().getCartBadgeCount();
+      expect(badge).toEqual(2);
+
+      await inventoryPage.getHeader().getCart().openCart();
       const pageTitle = await cartPage.getPageTitle();
       expect(pageTitle).toBe('Your Cart');
 
@@ -62,13 +62,17 @@ test.describe('Cart → Complete Checkout with Correct Calculation', () => {
       const boltShirtPrice = await inventoryPage.getInventoryItemPrice(boltShirtItem);
       console.log(`The price is: ${boltShirtPrice}`);
 
-      const badge = await inventoryPage.getCartBadgeCount();
-      expect(badge).toContain('3');
+      // const badge = await inventoryPage.getCartBadgeCount();
+      // expect(badge).toContain('3');
+      let badge = await inventoryPage.getHeader().getCart().getCartBadgeCount();
+      expect(badge).toEqual(3);
 
       // Navigate to cart
-      await inventoryPage.openCart();
+      await inventoryPage.getHeader().getCart().openCart();
       const pageTitle = await cartPage.getPageTitle();
       expect(pageTitle).toBe('Your Cart');
+      badge = await cartPage.getHeader().getCart().getCartBadgeCount();
+      expect(badge).toEqual(3);
 
       const isCheckoutBtnVisible = await cartPage.isCheckoutVisible();
       expect(isCheckoutBtnVisible).toBeTruthy();
@@ -109,6 +113,9 @@ test.describe('Cart → Complete Checkout with Correct Calculation', () => {
       // Verify success
       const completeMessage = await checkoutPage.getCompleteMessage();
       expect(completeMessage).toContain('Thank you for your order');
+
+      badge = await checkoutPage.getHeader().getCart().getCartBadgeCount();
+      expect(badge).toEqual(0);
     });
   });
 
@@ -120,16 +127,18 @@ test.describe('Cart → Complete Checkout with Correct Calculation', () => {
 
       await inventoryPage.addItemToCart('Sauce Labs Backpack');
       await expect(inventoryPage.getRemoveButton('Sauce Labs Backpack')).toBeVisible();
-      await inventoryPage.openCart();
+      await inventoryPage.getHeader().getCart().openCart();
 
       // Verify: Item is in cart
       expect(await cartPage.getCartItemCount()).toBe(1);
-    
+
       // Action: Remove all items
       await cartPage.removeItemFromCart('Sauce Labs Backpack');
 
       // Verify: Empty cart state
       expect(await cartPage.getCartItemCount()).toBe(0);
+      let badge = await cartPage.getHeader().getCart().getCartBadgeCount();
+      expect(badge).toEqual(0);
     });
 
     test('End-to-end remove cart flow - add multiple, remove some, checkout remainder', async ({ managerPage }) => {
@@ -144,8 +153,8 @@ test.describe('Cart → Complete Checkout with Correct Calculation', () => {
       await inventoryPage.addItemToCart('Test.allTheThings() T-Shirt (Red)'); // 15.99
 
       // Verify: Cart has 3 items
-      let badge = await inventoryPage.getCartBadgeCount();
-      expect(badge).toContain('3');
+      let badge = await inventoryPage.getHeader().getCart().getCartBadgeCount();
+      expect(badge).toEqual(3);
 
       // Verify: Remove buttons are visible for added items
       await expect(inventoryPage.getRemoveButton('Sauce Labs Fleece Jacket')).toBeVisible();
@@ -155,7 +164,7 @@ test.describe('Cart → Complete Checkout with Correct Calculation', () => {
       // Action: Remove item
       await inventoryPage.removeItemFromCart('Test.allTheThings() T-Shirt (Red)');
       await expect(inventoryPage.getAddButton('Test.allTheThings() T-Shirt (Red)')).toBeVisible();
-      expect(await inventoryPage.getCartBadgeCount()).toContain('2');
+      expect(await inventoryPage.getHeader().getCart().getCartBadgeCount()).toEqual(2);
 
       const flleceJacketItem = await inventoryPage.getInventoryItems().filter({ hasText: 'Sauce Labs Fleece Jacket' });
       const flleceJacketPrice = await inventoryPage.getInventoryItemPrice(flleceJacketItem);
@@ -166,7 +175,7 @@ test.describe('Cart → Complete Checkout with Correct Calculation', () => {
       console.log(`The price is: ${onesiePrice}`);
 
       // Navigate to cart
-      await inventoryPage.openCart();
+      await inventoryPage.getHeader().getCart().openCart();
       const pageTitle = await cartPage.getPageTitle();
       expect(pageTitle).toBe('Your Cart');
 
@@ -210,6 +219,9 @@ test.describe('Cart → Complete Checkout with Correct Calculation', () => {
       // Verify success
       const completeMessage = await checkoutPage.getCompleteMessage();
       expect(completeMessage).toContain('Thank you for your order');
+
+      badge = await checkoutPage.getHeader().getCart().getCartBadgeCount();
+      expect(badge).toEqual(0);
     });
   });
 });

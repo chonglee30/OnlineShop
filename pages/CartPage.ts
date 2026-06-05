@@ -1,8 +1,9 @@
 import { Page, Locator } from '@playwright/test';
 import { BasePage } from './BasePage';
+import { AuthenticatedPage } from './AuthenticatedPage';
 import { BurgerMenu } from './components/BurgerMenu';
 
-export class CartPage extends BasePage {
+export class CartPage extends AuthenticatedPage {
   readonly pageTitle: Locator;
   private readonly burgerMenu: BurgerMenu;
   readonly cartItems: Locator;
@@ -44,7 +45,7 @@ export class CartPage extends BasePage {
   getBurgerMenu(): BurgerMenu {
     return this.burgerMenu;
   }
-  
+
   async removeItemFromCart(itemName: string): Promise<void> {
     const itemContainer = this.page.locator('.cart_item', { hasText: itemName });
     await itemContainer.getByRole('button', { name: 'Remove' }).click();

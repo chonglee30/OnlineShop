@@ -1,14 +1,10 @@
 import { Page, Locator } from '@playwright/test';
 import { expect } from '@playwright/test';
-import { BasePage } from './BasePage';
-import { BurgerMenu } from './components/BurgerMenu';
+import { AuthenticatedPage } from './AuthenticatedPage';
 
-export class InventoryPage extends BasePage {
+export class InventoryPage extends AuthenticatedPage {
   readonly title: Locator;
-  readonly shoppingCartLink: Locator;
-  readonly shoppingCartBadge: Locator;
   readonly productSortContainer: Locator;
-  private readonly burgerMenu: BurgerMenu;
 
   // Inventory item elements
   readonly inventoryItems: Locator;
@@ -18,9 +14,6 @@ export class InventoryPage extends BasePage {
   constructor(page: Page) {
     super(page)
     this.title = page.locator('[data-test="title"]');
-    this.burgerMenu = new BurgerMenu(page);
-    this.shoppingCartLink = page.locator('[data-test="shopping-cart-link"]');
-    this.shoppingCartBadge = page.locator('[data-test="shopping-cart-badge"]');
     this.productSortContainer = page.locator('[data-test="product-sort-container"]');
 
     // General inventory elements
@@ -61,28 +54,6 @@ export class InventoryPage extends BasePage {
   async removeItemFromCart(itemName: string): Promise<void> {
     const itemContainer = this.page.locator('.inventory_item', { hasText: itemName });
     await itemContainer.getByRole('button', { name: 'Remove' }).click();
-  }
-
-  async getCartBadgeCount(): Promise<string | null> {
-    await this.shoppingCartBadge.waitFor({
-      state: 'visible'
-    });
-    return await this.shoppingCartBadge.textContent();
-  }
-
-  async isCartBadgeVisible(): Promise<boolean> {
-    return await this.shoppingCartBadge.isVisible();
-  }
-
-  async openCart(): Promise<void> {
-    await this.shoppingCartLink.waitFor({
-      state: 'visible'
-    });
-    await this.shoppingCartLink.click();
-  }
-
-  getBurgerMenu(): BurgerMenu {
-    return this.burgerMenu;
   }
 
   async isPageLoaded(): Promise<boolean> {
