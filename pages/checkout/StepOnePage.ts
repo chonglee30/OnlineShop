@@ -4,7 +4,6 @@ import { AuthenticatedPage } from '../AuthenticatedPage';
 
 // Checkout Information: Step One Page
 export class StepOnePage extends AuthenticatedPage {
-  readonly title: Locator;
   readonly firstNameInput: Locator;
   readonly lastNameInput: Locator;
   readonly postalCodeInput: Locator;
@@ -13,7 +12,6 @@ export class StepOnePage extends AuthenticatedPage {
 
   constructor(page: Page) {
     super(page);
-    this.title = page.locator('[data-test="title"]');
     this.firstNameInput = page.getByPlaceholder('First Name');
     this.lastNameInput = page.getByPlaceholder('Last Name');
     this.postalCodeInput = page.getByPlaceholder('Zip/Postal Code');

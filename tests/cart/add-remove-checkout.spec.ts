@@ -20,7 +20,7 @@ test.describe('Cart → Complete Checkout with Correct Calculation', () => {
       expect(badge).toEqual(2);
 
       await inventoryPage.getHeader().getCart().openCart();
-      const pageTitle = await cartPage.getPageTitle();
+      const pageTitle = await cartPage.getSubTitle();
       expect(pageTitle).toBe('Your Cart');
 
       const isVisible = await cartPage.isContinueShoppingVisible();
@@ -67,8 +67,9 @@ test.describe('Cart → Complete Checkout with Correct Calculation', () => {
 
       // Navigate to cart
       await inventoryPage.getHeader().getCart().openCart();
-      const pageTitle = await cartPage.getPageTitle();
+      const pageTitle = await cartPage.getSubTitle()
       expect(pageTitle).toBe('Your Cart');
+      
       badge = await cartPage.getHeader().getCart().getCartBadgeCount();
       expect(badge).toEqual(3);
 
@@ -174,7 +175,7 @@ test.describe('Cart → Complete Checkout with Correct Calculation', () => {
 
       // Navigate to cart
       await inventoryPage.getHeader().getCart().openCart();
-      const pageTitle = await cartPage.getPageTitle();
+      const pageTitle = await cartPage.getSubTitle();
       expect(pageTitle).toBe('Your Cart');
 
       const isCheckoutBtnVisible = await cartPage.isCheckoutVisible();

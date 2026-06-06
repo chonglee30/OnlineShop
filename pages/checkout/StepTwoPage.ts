@@ -4,7 +4,6 @@ import { AuthenticatedPage } from '../AuthenticatedPage';
 
 // Checkout: Overview: Step Two Page
 export class StepTwoPage extends AuthenticatedPage {
-  readonly title: Locator;
   readonly cartItems: Locator;
   readonly subtotal: Locator;
   readonly tax: Locator;
@@ -14,7 +13,6 @@ export class StepTwoPage extends AuthenticatedPage {
 
   constructor(page: Page) {
     super(page);
-    this.title = page.locator('[data-test="title"]');
     this.cartItems = this.page.locator('[data-test="inventory-item"]');
     this.subtotal = this.page.locator('[data-test="subtotal-label"]');
     this.tax = this.page.locator('[data-test="tax-label"]');
@@ -22,10 +20,6 @@ export class StepTwoPage extends AuthenticatedPage {
 
     this.cancelButton = page.getByRole('button', { name: 'Cancel' });
     this.finishButton = page.getByRole('button', { name: 'Finish' });
-  }
-
-  async getTitle(): Promise<string | null> {
-    return await this.title.textContent();
   }
 
   async getSubtotal(): Promise<string | null> {

@@ -1,6 +1,5 @@
 import { expect } from '@playwright/test';
 import { test } from '../../fixtures';
-import { ManagerPage } from '../../pages/ManagerPage';
 import { LoginPage } from '../../pages/LoginPage';
 import { InventoryPage } from '../../pages/InventoryPage';
 
@@ -8,9 +7,8 @@ const INVALID_PASSWORD = 'wrong_password';
 
 test.describe('Authentication (Login)', () => {
   test.beforeEach(async ({ config, page }) => {
-    await page.goto(config.url, { waitUntil: 'domcontentloaded' });
-    expect(await page.title()).toEqual('Swag Labs')
-    await expect(page.locator('.login_logo')).toHaveText('Swag Labs')
+    const loginPage = new LoginPage(page);
+    loginPage.goToLoginPage(config.url)
   });
 
   // ========== VALID USER LOGINS ==========
@@ -25,7 +23,7 @@ test.describe('Authentication (Login)', () => {
     await expect(page).toHaveURL(/inventory\.html/);
 
     // Verify: Inventory page is displayed
-    const title = await inventoryPage.title.textContent();
+    const title = await inventoryPage.getSubTitle();
     expect(title).toContain('Products');
   });
 

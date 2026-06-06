@@ -23,9 +23,8 @@ export class LoginPage extends BasePage {
 
   async goToLoginPage(url: string) {
     await this.page.goto(`${url}`);
-    expect(await this.page.title()).toEqual('Swag Labs')
+    expect(await this.getPageTitle()).toEqual('Swag Labs')
     await expect(this.page.locator('.login_logo')).toHaveText('Swag Labs')
-    await expect(this.logo.getLocator()).toHaveText('Swag Labs')
   }
 
   async goToOtherPage(locator: string) {

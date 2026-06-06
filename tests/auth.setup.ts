@@ -6,7 +6,6 @@ import fs from 'fs';
 import path from 'path';
 
 setup('Authenticate by UI', async ({ config, page }) => {
-
   // 1. Resolve an absolute path to ensure consistency
   const authFile = path.resolve(__dirname, '../.auth/user.json');
 

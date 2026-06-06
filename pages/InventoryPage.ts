@@ -3,7 +3,6 @@ import { expect } from '@playwright/test';
 import { AuthenticatedPage } from './AuthenticatedPage';
 
 export class InventoryPage extends AuthenticatedPage {
-  readonly title: Locator;
   readonly productSortContainer: Locator;
 
   // Inventory item elements
@@ -13,7 +12,6 @@ export class InventoryPage extends AuthenticatedPage {
 
   constructor(page: Page) {
     super(page)
-    this.title = page.locator('[data-test="title"]');
     this.productSortContainer = page.locator('[data-test="product-sort-container"]');
 
     // General inventory elements
@@ -57,6 +55,6 @@ export class InventoryPage extends AuthenticatedPage {
   }
 
   async isPageLoaded(): Promise<boolean> {
-    return await this.title.isVisible();
+    return await this.getSubTitle() === 'Products';
   }
 }

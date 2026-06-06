@@ -5,9 +5,8 @@ import { InventoryPage } from '../../pages/InventoryPage';
 
 test.describe('Authentication (Login)', () => {
   test.beforeEach(async ({ config, page }) => {
-    await page.goto(config.url);
-    expect(await page.title()).toEqual('Swag Labs')
-    await expect(page.locator('.login_logo')).toHaveText('Swag Labs')
+    const loginPage = new LoginPage(page);
+    loginPage.goToLoginPage(config.url)
   });
 
   test.describe('Visual Validation of Inventory Page', () => {
@@ -22,7 +21,7 @@ test.describe('Authentication (Login)', () => {
       await expect(page).toHaveURL(/inventory\.html/);
 
       // Verify: Inventory page is displayed
-      const title = await inventoryPage.title.textContent();
+      const title = await inventoryPage.getSubTitle();
       expect(title).toContain('Products');
 
       const productImages = page.locator('.inventory_item_img img');
@@ -47,7 +46,7 @@ test.describe('Authentication (Login)', () => {
       await loginPage.login(config.problem_user, config.valid_password);
       await expect(page).toHaveURL(/inventory\.html/);
 
-      const title = await inventoryPage.title.textContent();
+      const title = await inventoryPage.getSubTitle();
       expect(title).toContain('Products');
 
       const productImages = page.locator('.inventory_item_img img');
