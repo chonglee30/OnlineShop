@@ -31,26 +31,24 @@ export class InventoryPage extends AuthenticatedPage {
   }
 
   getAddButton(itemName: string): Locator {
-    return this.page
-      .locator('.inventory_item', { hasText: itemName })
+    return this.page.locator('[data-test="inventory-item"]', { hasText: itemName })
       .getByRole('button', { name: 'Add to cart' });
   }
 
   getRemoveButton(itemName: string): Locator {
-    return this.page
-      .locator('.inventory_item', { hasText: itemName })
+    return this.page.locator('[data-test="inventory-item"]', { hasText: itemName })
       .getByRole('button', { name: 'Remove' });
   }
 
   // addItemToCart:
   async addItemToCart(itemName: string): Promise<void> {
-    const itemContainer = this.page.locator('.inventory_item', { hasText: itemName });
+    const itemContainer = this.page.locator('[data-test="inventory-item"]', { hasText: itemName });
     await itemContainer.getByRole('button', { name: 'Add to cart' }).click();
   }
 
   // removeItemFromCart:
   async removeItemFromCart(itemName: string): Promise<void> {
-    const itemContainer = this.page.locator('.inventory_item', { hasText: itemName });
+    const itemContainer = this.page.locator('[data-test="inventory-item"]', { hasText: itemName });
     await itemContainer.getByRole('button', { name: 'Remove' }).click();
   }
 

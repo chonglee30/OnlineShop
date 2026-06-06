@@ -4,7 +4,6 @@ import { AuthenticatedPage } from './AuthenticatedPage';
 import { BurgerMenu } from './components/BurgerMenu';
 
 export class CartPage extends AuthenticatedPage {
-  private readonly burgerMenu: BurgerMenu;
   readonly cartItems: Locator;
   readonly cartListItems: Locator;
 
@@ -18,8 +17,6 @@ export class CartPage extends AuthenticatedPage {
 
   constructor(page: Page) {
     super(page);
-    this.burgerMenu = new BurgerMenu(page);
-
     this.cartItems = page.locator('[data-test="cart-item"]');
     this.cartListItems = page.locator('[data-test="cart-list"] [data-test="inventory-item"]');
 
@@ -36,19 +33,15 @@ export class CartPage extends AuthenticatedPage {
     return await this.cartListItems.count();
   }
 
-  getBurgerMenu(): BurgerMenu {
-    return this.burgerMenu;
-  }
-
-  async removeItemFromCart(itemName: string): Promise<void> {
-    const itemContainer = this.page.locator('.cart_item', { hasText: itemName });
-    await itemContainer.getByRole('button', { name: 'Remove' }).click();
-  }
-
   getRemoveButton(itemName: string): Locator {
-    return this.page
-      .locator('.cart_item', { hasText: itemName })
+    return this.page.locator('[data-test="inventory-item"]', { hasText: itemName })
       .getByRole('button', { name: 'Remove' });
+  }
+
+  // removeItemFromCart:
+  async removeItemFromCart(itemName: string): Promise<void> {
+    const itemContainer = this.page.locator('[data-test="inventory-item"]', { hasText: itemName });
+    await itemContainer.getByRole('button', { name: 'Remove' }).click();
   }
 
   async checkout(): Promise<void> {
