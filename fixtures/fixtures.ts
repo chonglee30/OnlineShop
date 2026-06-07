@@ -1,6 +1,6 @@
 import {test as base } from '@playwright/test'
-import { ManagerPage } from './pages/manager/ManagerPage';
-import { config } from './config/user.config';
+import { ManagerPage } from '../pages/manager/ManagerPage';
+import { config } from '../config/user.config';
 
 export type TestOptions = {
   managerPage: ManagerPage
@@ -16,4 +16,4 @@ export const test = base.extend<TestOptions>({
   config: async ({}, use) => {
     await use(config);
   }
-}); 
+});

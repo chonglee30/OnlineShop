@@ -1,5 +1,5 @@
 import { expect } from '@playwright/test';
-import { test } from '../../fixtures';
+import { test } from '../../fixtures/fixtures';
 import { PriceUtils } from '../../utils/price-utils';
 
 test.describe('Cart → Complete Checkout with Correct Calculation', () => {

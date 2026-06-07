@@ -1,5 +1,5 @@
 import { expect } from '@playwright/test';
-import { test } from '../../fixtures';
+import { test } from '../../fixtures/fixtures';
 import { LoginPage } from '../../pages/LoginPage';
 import { InventoryPage } from '../../pages/InventoryPage';
 
@@ -16,9 +16,6 @@ test.describe('Authentication (Login)', () => {
 
       // Action: Fill credentials and login
       await loginPage.login(config.standard_user, config.valid_password);
-
-      // // Verify: Successfully logged in - redirected to inventory page
-      // await expect(page).toHaveURL(/inventory\.html/);
 
       // Verify: Inventory page is displayed
       const title = await inventoryPage.getSubTitle();
