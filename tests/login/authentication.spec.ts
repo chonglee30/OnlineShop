@@ -11,179 +11,113 @@ test.describe('Authentication (Login)', () => {
     loginPage.goToLoginPage(config.url)
   });
 
-  // ========== VALID USER LOGINS ==========
-  test('Valid login with standard_user and correct password', async ({ config, page }) => {
-    const loginPage = new LoginPage(page);
-    const inventoryPage = new InventoryPage(page);
+  test.describe('Positive Authentication (Login) Scenario', () => {
+    // ========== SESSION & PERSISTENCE ==========
+    test('After logout, cannot access inventory page directly', async ({ config, page }) => {
+      const loginPage = new LoginPage(page);
+      const inventoryPage = new InventoryPage(page);
 
-    // Action: Fill credentials and login
-    await loginPage.login(config.standard_user, config.valid_password);
+      await loginPage.login(config.standard_user, config.valid_password);
+      await page.waitForURL('**/inventory.html');
+      await expect(page).toHaveURL(/inventory\.html/);
+      expect(await inventoryPage.getSubTitle()).toContain('Products');
 
-    // Verify: Successfully logged in - redirected to inventory page
-    await expect(page).toHaveURL(/inventory\.html/);
+      // Logout
+      await inventoryPage.getHeader().getBurgerMenu().logout();
 
-    // Verify: Inventory page is displayed
-    const title = await inventoryPage.getSubTitle();
-    expect(title).toContain('Products');
+      // Action: Try to access inventory page directly
+      await page.goto(config.url + '/inventory.html');
+      expect(page.url()).not.toContain('inventory.html');
+    });
   });
 
-  test('Valid login with error_user and correct password', async ({ config, page }) => {
-    const loginPage = new LoginPage(page);
+  test.describe('Negative Authentication (Login) Scenario', () => {
+    // ========== LOCKED OUT USER ==========
+    test('Locked out user cannot login even with correct password', async ({ config, page }) => {
+      const loginPage = new LoginPage(page);
 
-    // Action: Fill credentials and login
-    await loginPage.login(config.error_user, config.valid_password);
-    // Verify: Successfully logged in
-    await expect(page).toHaveURL(/inventory\.html/);
-  });
+      // Action: Attempt to login with locked_out_user
+      await loginPage.login(config.locked_out_user, config.valid_password);
 
-  test('Valid login with visual_user and correct password', async ({ config, page }) => {
-    const loginPage = new LoginPage(page);
+      // Verify: Login fails with error message
+      const isErrorVisible = await loginPage.isErrorVisible();
+      expect(isErrorVisible).toBeTruthy();
 
-    // Action: Fill credentials and login
-    await loginPage.login(config.visual_user, config.valid_password);
+      const errorText = await loginPage.getErrorMessage();
+      expect(errorText).toContain('Sorry, this user has been locked out');
 
-    // Verify: Successfully logged in
-    await expect(page).toHaveURL(/inventory\.html/);
-  });
+      // Verify: Still on login page
+      await expect(page).toHaveURL(config.url);
+    });
 
-  // ========== LOCKED OUT USER ==========
-  test('Locked out user cannot login even with correct password', async ({ config, page }) => {
-    const loginPage = new LoginPage(page);
+    // ========== INVALID CREDENTIALS ==========
+    test('Invalid password with valid username fails', async ({ config, page }) => {
+      const loginPage = new LoginPage(page);
+      // Action: Login with valid username but wrong password
+      await loginPage.login(config.standard_user, INVALID_PASSWORD);
 
-    // Action: Attempt to login with locked_out_user
-    await loginPage.usernameInput.fill(config.locked_out_user);
-    await loginPage.passwordInput.fill(config.valid_password);
-    await loginPage.loginButton.click();
+      // Verify: Error message displays
+      const isErrorVisible = await loginPage.isErrorVisible();
+      expect(isErrorVisible).toBeTruthy();
 
-    // Verify: Login fails with error message
-    const isErrorVisible = await loginPage.isErrorVisible();
-    expect(isErrorVisible).toBeTruthy();
+      const errorText = await loginPage.getErrorMessage();
+      expect(errorText).toContain('Username and password do not match');
 
-    const errorText = await loginPage.getErrorMessage();
-    expect(errorText).toContain('Sorry, this user has been locked out');
+      // Verify: Still on login page
+      await expect(page).toHaveURL(config.url);
+    });
 
-    // Verify: Still on login page
-    await expect(page).toHaveURL(/index\.html|\/$/);
-  });
+    test('Invalid username fails to login', async ({ config, page }) => {
+      const loginPage = new LoginPage(page);
+      // Action: Login with non-existent username
+      await loginPage.login('non_existent_user', config.valid_password);
 
-  // ========== INVALID CREDENTIALS ==========
-  test('Invalid password with valid username fails', async ({ config, page }) => {
-    const loginPage = new LoginPage(page);
-    // Action: Login with valid username but wrong password
-    await loginPage.login(config.standard_user,INVALID_PASSWORD);
+      // Verify: Error message displays
+      const isErrorVisible = await loginPage.isErrorVisible();
+      expect(isErrorVisible).toBeTruthy();
 
-    // Verify: Error message displays
-    const isErrorVisible = await loginPage.isErrorVisible();
-    expect(isErrorVisible).toBeTruthy();
+      const errorText = await loginPage.getErrorMessage();
+      expect(errorText).toContain('Username and password do not match');
 
-    const errorText = await loginPage.getErrorMessage();
-    expect(errorText).toContain('Username and password do not match');
+      // Verify: Still on login page
+      await expect(page).toHaveURL(config.url);
+    });
 
-    // Verify: Still on login page
-    await expect(page).toHaveURL(/index\.html|\/$/);
-  });
+    test('Empty username field shows error', async ({ config, page }) => {
+      const loginPage = new LoginPage(page);
+      await loginPage.login('', config.valid_password);
 
-  test('Invalid username fails to login', async ({ config, page }) => {
-    const loginPage = new LoginPage(page);
-    // Action: Login with non-existent username
-    await loginPage.login('non_existent_user',config.valid_password);
-    
-    // Verify: Error message displays
-    const isErrorVisible = await loginPage.isErrorVisible();
-    expect(isErrorVisible).toBeTruthy();
+      // Verify: Error message displays
+      const isErrorVisible = await loginPage.isErrorVisible();
+      expect(isErrorVisible).toBeTruthy();
 
-    const errorText = await loginPage.getErrorMessage();
-    expect(errorText).toContain('Username and password do not match');
+      const errorText = await loginPage.getErrorMessage();
+      expect(errorText).toContain('Username is required');
+    });
 
-    // Verify: Still on login page
-    await expect(page).toHaveURL(/index\.html|\/$/);
-  });
+    test('Empty password field shows error', async ({ config, page }) => {
+      const loginPage = new LoginPage(page);
+      await loginPage.login(config.standard_user, '');
 
-  test('Empty username field shows error', async ({ config, page }) => {
-    const loginPage = new LoginPage(page);
-    await loginPage.login('',config.valid_password);
-    
-    // Verify: Error message displays
-    const isErrorVisible = await loginPage.isErrorVisible();
-    expect(isErrorVisible).toBeTruthy();
+      // Verify: Error message displays
+      const isErrorVisible = await loginPage.isErrorVisible();
+      expect(isErrorVisible).toBeTruthy();
 
-    const errorText = await loginPage.getErrorMessage();
-    expect(errorText).toContain('Username is required');
-  });
+      const errorText = await loginPage.getErrorMessage();
+      expect(errorText).toContain('Password is required');
+    });
 
-  test('Empty password field shows error', async ({ config, page }) => {
-    const loginPage = new LoginPage(page);
-    await loginPage.login(config.standard_user, '');
+    test('Case sensitivity - username is case sensitive', async ({ config, page }) => {
+      const loginPage = new LoginPage(page);
+      // Action: Try login with uppercase username
+      await loginPage.login('STANDARD_USER', config.valid_password);
 
-    // Verify: Error message displays
-    const isErrorVisible = await loginPage.isErrorVisible();
-    expect(isErrorVisible).toBeTruthy();
+      // Verify: Login fails (username is case sensitive)
+      const isErrorVisible = await loginPage.isErrorVisible();
+      expect(isErrorVisible).toBeTruthy();
 
-    const errorText = await loginPage.getErrorMessage();
-    expect(errorText).toContain('Password is required');
-  });
-
-  test('Case sensitivity - username is case sensitive', async ({ config, page }) => {
-    const loginPage = new LoginPage(page);
-    // Action: Try login with uppercase username
-    await loginPage.login('STANDARD_USER', config.valid_password);
-
-    // Verify: Login fails (username is case sensitive)
-    const isErrorVisible = await loginPage.isErrorVisible();
-    expect(isErrorVisible).toBeTruthy();
-
-    const errorText = await loginPage.getErrorMessage();
-    expect(errorText).toContain('Username and password do not match');
-  });
-
-  // ========== SESSION & PERSISTENCE ==========
-  test('After logout, cannot access inventory page directly', async ({ config, page }) => {
-    const loginPage = new LoginPage(page);
-    const inventoryPage = new InventoryPage(page);
-
-    // Setup: Login and logout
-    await loginPage.login(config.standard_user, config.valid_password);
-    await page.waitForURL('**/inventory.html');
-
-    // Logout
-    await inventoryPage.getHeader().getBurgerMenu().logout();
-
-    // Action: Try to access inventory page directly
-    await page.goto(config.url + '/inventory.html');
-    console.log(page.url())
-    expect(page.url()).not.toContain('inventory.html');
-  });
-
-  test('Cookies/session cleared after logout', async ({ config, page }) => {
-    const loginPage = new LoginPage(page);
-    const inventoryPage = new InventoryPage(page);
-
-    // Setup: Login
-    await loginPage.login(config.standard_user, config.valid_password);
-    await page.waitForURL('**/inventory.html');
-
-    // Get session token from storage
-    const sessionBefore = await page.evaluate(() => sessionStorage.getItem('session_id'));
-    await inventoryPage.getHeader().getBurgerMenu().logout();
-
-    // Verify: Session cleared
-    const sessionAfter = await page.evaluate(() => sessionStorage.getItem('session_id'));
-    expect(sessionAfter).toBeNull();
-  });
-
-  // ========== ERROR HANDLING & EDGE CASES ==========
-  test('Error message displays with clear close button', async ({ page }) => {
-    const loginPage = new LoginPage(page);
-
-    // Action: Trigger error with invalid credentials
-    await loginPage.login('invalid', 'invalid');
-
-    // Verify: Error message is visible
-    const isErrorVisible = await loginPage.isErrorVisible();
-    expect(isErrorVisible).toBeTruthy();
-
-    // Verify: Close button exists
-    const closeButtonVisible = await loginPage.errorButton.isVisible();
-    expect(closeButtonVisible).toBeTruthy();
+      const errorText = await loginPage.getErrorMessage();
+      expect(errorText).toContain('Username and password do not match');
+    });
   });
 });

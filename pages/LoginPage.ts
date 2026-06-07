@@ -31,6 +31,7 @@ export class LoginPage extends BasePage {
 
     // 3. Keep the validation to ensure the page is actually ready for interaction
     await expect(this.page).toHaveTitle('Swag Labs');
+    await expect(this.page.locator('.login_logo')).toHaveText('Swag Labs')
   }
 
   async goToOtherPage(locator: string) {
