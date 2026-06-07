@@ -29,8 +29,16 @@ export class LoginPage extends BasePage {
       timeout: 15000 // 15 seconds is usually enough for local navigation
     });
 
+    // Use a "web-first" retry strategy
+    await expect.poll(async () => {
+      return await this.page.title();
+    }, {
+      message: 'Page title never matched',
+      intervals: [500, 1000],
+      timeout: 10000,
+    }).toBe('Swag Labs');
+
     // 3. Keep the validation to ensure the page is actually ready for interaction
-    await expect(this.page).toHaveTitle('Swag Labs');
     await expect(this.page.locator('.login_logo')).toHaveText('Swag Labs')
   }
 
@@ -41,9 +49,23 @@ export class LoginPage extends BasePage {
   async login(username: string, password: string): Promise<void> {
     await this.usernameInput.fill(username);
     await this.passwordInput.fill(password);
-    await this.loginButton.click();
-    await this.page.waitForLoadState('networkidle');
+    await Promise.all([
+      this.loginButton.click(),
+      this.page.waitForURL('**/inventory.html') // Wait for the expected destination
+    ]);
   }
+
+  async errorLogin(username: string, password: string): Promise<void> {
+    await this.usernameInput.fill(username);
+    await this.passwordInput.fill(password);
+    await this.loginButton.click();
+
+    // FIX: Remove waitForLoadState('networkidle')
+    // Instead, wait for the expected outcome of the login action.
+    // If the login is supposed to fail, wait for the error message to be visible:
+    await expect(this.errorMessage).toBeVisible();
+  }
+
 
   async getErrorMessage(): Promise<string | null> {
     return await this.errorMessage.textContent();

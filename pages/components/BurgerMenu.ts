@@ -15,13 +15,14 @@ export class BurgerMenu {
   }
 
   async open(): Promise<void> {
-    // Only click if it's not already expanded to avoid errors
-   // if (!(await this.logoutLink.isVisible())) {
-      await expect(this.menuBtn).toBeVisible();
-      await this.menuBtn.click();
-      // Ensure the menu items are visible after clicking
-      await expect(this.logoutLink).toBeVisible();
-   // }
+    await expect(this.menuBtn).toBeVisible();
+    await this.menuBtn.click();
+    // Ensure the menu items are visible after clicking
+    await expect(this.logoutLink).toBeEnabled();
+    // If you need to ensure the menu is fully expanded, 
+    // verify the 'aria-hidden' attribute which often toggles in UI libraries:
+    await expect(this.page.locator('.bm-menu-wrap')).toHaveAttribute('aria-hidden', 'false');
+    await this.logoutLink.waitFor({ state: 'visible' });
   }
 
   async clickAbout(): Promise<void> {

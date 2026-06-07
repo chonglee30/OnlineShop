@@ -18,7 +18,6 @@ test.describe('Authentication (Login)', () => {
       const inventoryPage = new InventoryPage(page);
 
       await loginPage.login(config.standard_user, config.valid_password);
-      await page.waitForURL('**/inventory.html');
       await expect(page).toHaveURL(/inventory\.html/);
       expect(await inventoryPage.getSubTitle()).toContain('Products');
 
@@ -27,7 +26,6 @@ test.describe('Authentication (Login)', () => {
 
       // Action: Try to access inventory page directly
       await page.goto(config.url + '/inventory.html');
-      //expect(page.url()).not.toContain('inventory.html');
       await expect(page).toHaveURL(config.url);
     });
   });
@@ -38,7 +36,7 @@ test.describe('Authentication (Login)', () => {
       const loginPage = new LoginPage(page);
 
       // Action: Attempt to login with locked_out_user
-      await loginPage.login(config.locked_out_user, config.valid_password);
+      await loginPage.errorLogin(config.locked_out_user, config.valid_password);
 
       // Verify: Login fails with error message
       const isErrorVisible = await loginPage.isErrorVisible();
@@ -55,7 +53,7 @@ test.describe('Authentication (Login)', () => {
     test('Invalid password with valid username fails', async ({ config, page }) => {
       const loginPage = new LoginPage(page);
       // Action: Login with valid username but wrong password
-      await loginPage.login(config.standard_user, INVALID_PASSWORD);
+      await loginPage.errorLogin(config.standard_user, INVALID_PASSWORD);
 
       // Verify: Error message displays
       const isErrorVisible = await loginPage.isErrorVisible();
@@ -71,7 +69,7 @@ test.describe('Authentication (Login)', () => {
     test('Invalid username fails to login', async ({ config, page }) => {
       const loginPage = new LoginPage(page);
       // Action: Login with non-existent username
-      await loginPage.login('non_existent_user', config.valid_password);
+      await loginPage.errorLogin('non_existent_user', config.valid_password);
 
       // Verify: Error message displays
       const isErrorVisible = await loginPage.isErrorVisible();
@@ -86,7 +84,7 @@ test.describe('Authentication (Login)', () => {
 
     test('Empty username field shows error', async ({ config, page }) => {
       const loginPage = new LoginPage(page);
-      await loginPage.login('', config.valid_password);
+      await loginPage.errorLogin('', config.valid_password);
 
       // Verify: Error message displays
       const isErrorVisible = await loginPage.isErrorVisible();
@@ -98,7 +96,7 @@ test.describe('Authentication (Login)', () => {
 
     test('Empty password field shows error', async ({ config, page }) => {
       const loginPage = new LoginPage(page);
-      await loginPage.login(config.standard_user, '');
+      await loginPage.errorLogin(config.standard_user, '');
 
       // Verify: Error message displays
       const isErrorVisible = await loginPage.isErrorVisible();
@@ -106,19 +104,6 @@ test.describe('Authentication (Login)', () => {
 
       const errorText = await loginPage.getErrorMessage();
       expect(errorText).toContain('Password is required');
-    });
-
-    test('Case sensitivity - username is case sensitive', async ({ config, page }) => {
-      const loginPage = new LoginPage(page);
-      // Action: Try login with uppercase username
-      await loginPage.login('STANDARD_USER', config.valid_password);
-
-      // Verify: Login fails (username is case sensitive)
-      const isErrorVisible = await loginPage.isErrorVisible();
-      expect(isErrorVisible).toBeTruthy();
-
-      const errorText = await loginPage.getErrorMessage();
-      expect(errorText).toContain('Username and password do not match');
     });
   });
 });

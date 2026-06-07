@@ -21,6 +21,10 @@ export class AuthenticatedPage extends BasePage {
     return await this.titleSpan.textContent();
   }
 
+  getTitleLocator(): Locator {
+    return this.page.locator('[data-test="title"]');
+  }
+
   async isPageLoaded(expectedTitle: string): Promise<boolean> {
     const currentTitle = await this.getSubTitle();
     return currentTitle === expectedTitle;
