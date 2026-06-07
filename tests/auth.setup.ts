@@ -21,7 +21,7 @@ setup('Authenticate by UI', async ({ config, page }) => {
   await loginPage.login(config.standard_user, config.valid_password);
   await page.waitForURL('**/inventory.html');
 
-  expect(await inventoryPage.isPageLoaded()).toBeTruthy();
+  expect(await inventoryPage.isPageLoaded('Products')).toBeTruthy();
   await expect(page.locator('[data-test="inventory-list"]')).toBeVisible();
 
   const state = await page.context().storageState({ path: authFile });

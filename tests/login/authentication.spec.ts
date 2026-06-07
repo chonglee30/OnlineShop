@@ -27,7 +27,8 @@ test.describe('Authentication (Login)', () => {
 
       // Action: Try to access inventory page directly
       await page.goto(config.url + '/inventory.html');
-      expect(page.url()).not.toContain('inventory.html');
+      //expect(page.url()).not.toContain('inventory.html');
+      await expect(page).toHaveURL(config.url);
     });
   });
 

@@ -20,4 +20,9 @@ export class AuthenticatedPage extends BasePage {
   async getSubTitle(): Promise<string | null> {
     return await this.titleSpan.textContent();
   }
+
+  async isPageLoaded(expectedTitle: string): Promise<boolean> {
+    const currentTitle = await this.getSubTitle();
+    return currentTitle === expectedTitle;
+  }
 }

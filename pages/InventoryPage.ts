@@ -9,8 +9,4 @@ export class InventoryPage extends AuthenticatedPage {
     super(page)
     this.productSortContainer = page.locator('[data-test="product-sort-container"]');
   }
-
-  async isPageLoaded(): Promise<boolean> {
-    return await this.getSubTitle() === 'Products';
-  }
 }
