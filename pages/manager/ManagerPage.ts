@@ -4,6 +4,7 @@ import { LoginPage } from '../LoginPage';
 import { InventoryPage } from '../InventoryPage';
 import { CartPage } from '../CartPage';
 import { CheckoutManager } from './CheckoutManager';
+import { ProductHelper } from "../../utils/ProductHelper";
 
 export class ManagerPage {
   private readonly page: Page
@@ -11,6 +12,7 @@ export class ManagerPage {
   private readonly inventoryPage: InventoryPage
   private readonly cartPage: CartPage
   private readonly checkoutManager: CheckoutManager;
+  private productHelper: ProductHelper;
 
   constructor(page: Page) {
     this.page = page
@@ -18,6 +20,7 @@ export class ManagerPage {
     this.inventoryPage = new InventoryPage(this.page)
     this.cartPage = new CartPage(this.page)
     this.checkoutManager = new CheckoutManager(this.page);
+    this.productHelper = new ProductHelper(this.page);
   }
 
   onLoginPage() { //: LoginPage
@@ -34,5 +37,9 @@ export class ManagerPage {
 
   onCheckout() {
     return this.checkoutManager;
+  }
+
+  getProductHelper() : ProductHelper {
+    return this.productHelper;
   }
 }

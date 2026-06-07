@@ -20,7 +20,7 @@ export class CartPage extends AuthenticatedPage {
     this.cartItems = page.locator('[data-test="cart-item"]');
     this.cartListItems = page.locator('[data-test="cart-list"] [data-test="inventory-item"]');
 
-    this.checkoutButton = page.locator('[data-test="checkout"]');
+    this.checkoutButton = page.getByRole('button', { name: 'Checkout' });
     this.continueShoppingButton = page.getByRole('button', { name: 'Continue Shopping' });
     this.itemQuantities = page.locator('[data-test="item-quantity"]');
 
@@ -31,17 +31,6 @@ export class CartPage extends AuthenticatedPage {
 
   async getCartItemCount(): Promise<number> {
     return await this.cartListItems.count();
-  }
-
-  getRemoveButton(itemName: string): Locator {
-    return this.page.locator('[data-test="inventory-item"]', { hasText: itemName })
-      .getByRole('button', { name: 'Remove' });
-  }
-
-  // removeItemFromCart:
-  async removeItemFromCart(itemName: string): Promise<void> {
-    const itemContainer = this.page.locator('[data-test="inventory-item"]', { hasText: itemName });
-    await itemContainer.getByRole('button', { name: 'Remove' }).click();
   }
 
   async checkout(): Promise<void> {

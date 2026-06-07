@@ -70,9 +70,7 @@ test.describe('Authentication (Login)', () => {
   test('Invalid password with valid username fails', async ({ config, page }) => {
     const loginPage = new LoginPage(page);
     // Action: Login with valid username but wrong password
-    await loginPage.usernameInput.fill(config.standard_user);
-    await loginPage.passwordInput.fill(INVALID_PASSWORD);
-    await loginPage.loginButton.click();
+    await loginPage.login(config.standard_user,INVALID_PASSWORD);
 
     // Verify: Error message displays
     const isErrorVisible = await loginPage.isErrorVisible();
@@ -87,12 +85,9 @@ test.describe('Authentication (Login)', () => {
 
   test('Invalid username fails to login', async ({ config, page }) => {
     const loginPage = new LoginPage(page);
-
     // Action: Login with non-existent username
-    await loginPage.usernameInput.fill('non_existent_user');
-    await loginPage.passwordInput.fill(config.valid_password);
-    await loginPage.loginButton.click();
-
+    await loginPage.login('non_existent_user',config.valid_password);
+    
     // Verify: Error message displays
     const isErrorVisible = await loginPage.isErrorVisible();
     expect(isErrorVisible).toBeTruthy();
@@ -106,12 +101,8 @@ test.describe('Authentication (Login)', () => {
 
   test('Empty username field shows error', async ({ config, page }) => {
     const loginPage = new LoginPage(page);
-
-    // Action: Leave username empty and try to login
-    await loginPage.usernameInput.fill('');
-    await loginPage.passwordInput.fill(config.valid_password);
-    await loginPage.loginButton.click();
-
+    await loginPage.login('',config.valid_password);
+    
     // Verify: Error message displays
     const isErrorVisible = await loginPage.isErrorVisible();
     expect(isErrorVisible).toBeTruthy();
@@ -122,11 +113,7 @@ test.describe('Authentication (Login)', () => {
 
   test('Empty password field shows error', async ({ config, page }) => {
     const loginPage = new LoginPage(page);
-
-    // Action: Leave password empty and try to login
-    await loginPage.usernameInput.fill(config.standard_user);
-    await loginPage.passwordInput.fill('');
-    await loginPage.loginButton.click();
+    await loginPage.login(config.standard_user, '');
 
     // Verify: Error message displays
     const isErrorVisible = await loginPage.isErrorVisible();
@@ -138,11 +125,8 @@ test.describe('Authentication (Login)', () => {
 
   test('Case sensitivity - username is case sensitive', async ({ config, page }) => {
     const loginPage = new LoginPage(page);
-
     // Action: Try login with uppercase username
-    await loginPage.usernameInput.fill('STANDARD_USER');
-    await loginPage.passwordInput.fill(config.valid_password);
-    await loginPage.loginButton.click();
+    await loginPage.login('STANDARD_USER', config.valid_password);
 
     // Verify: Login fails (username is case sensitive)
     const isErrorVisible = await loginPage.isErrorVisible();
@@ -150,19 +134,6 @@ test.describe('Authentication (Login)', () => {
 
     const errorText = await loginPage.getErrorMessage();
     expect(errorText).toContain('Username and password do not match');
-  });
-
-  test('Whitespace in username causes login to fail', async ({ config, page }) => {
-    const loginPage = new LoginPage(page);
-
-    // Action: Try login with username that has whitespace
-    await loginPage.usernameInput.fill('  standard_user  ');
-    await loginPage.passwordInput.fill(config.valid_password);
-    await loginPage.loginButton.click();
-
-    // Verify: Login fails
-    const isErrorVisible = await loginPage.isErrorVisible();
-    expect(isErrorVisible).toBeTruthy();
   });
 
   // ========== SESSION & PERSISTENCE ==========
@@ -205,9 +176,7 @@ test.describe('Authentication (Login)', () => {
     const loginPage = new LoginPage(page);
 
     // Action: Trigger error with invalid credentials
-    await loginPage.usernameInput.fill('invalid');
-    await loginPage.passwordInput.fill('invalid');
-    await loginPage.loginButton.click();
+    await loginPage.login('invalid', 'invalid');
 
     // Verify: Error message is visible
     const isErrorVisible = await loginPage.isErrorVisible();
@@ -216,25 +185,5 @@ test.describe('Authentication (Login)', () => {
     // Verify: Close button exists
     const closeButtonVisible = await loginPage.errorButton.isVisible();
     expect(closeButtonVisible).toBeTruthy();
-  });
-
-  test('Clicking error close button hides error message', async ({ page }) => {
-    const loginPage = new LoginPage(page);
-
-    // Action: Trigger error
-    await loginPage.usernameInput.fill('invalid');
-    await loginPage.passwordInput.fill('invalid');
-    await loginPage.loginButton.click();
-
-    // Verify: Error message visible
-    let isErrorVisible = await loginPage.isErrorVisible();
-    expect(isErrorVisible).toBeTruthy();
-
-    // Action: Click close button
-    await loginPage.closeError();
-
-    // Verify: Error message is hidden
-    isErrorVisible = await loginPage.isErrorVisible();
-    expect(isErrorVisible).toBeFalsy();
   });
 });

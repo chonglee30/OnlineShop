@@ -16,11 +16,12 @@ export class BurgerMenu {
 
   async open(): Promise<void> {
     // Only click if it's not already expanded to avoid errors
-    if (!(await this.logoutLink.isVisible())) {
+   // if (!(await this.logoutLink.isVisible())) {
+      await expect(this.menuBtn).toBeVisible();
       await this.menuBtn.click();
       // Ensure the menu items are visible after clicking
       await expect(this.logoutLink).toBeVisible();
-    }
+   // }
   }
 
   async clickAbout(): Promise<void> {

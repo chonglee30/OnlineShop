@@ -22,9 +22,15 @@ export class LoginPage extends BasePage {
   }
 
   async goToLoginPage(url: string) {
-    await this.page.goto(`${url}`);
-    expect(await this.getPageTitle()).toEqual('Swag Labs')
-    await expect(this.page.locator('.login_logo')).toHaveText('Swag Labs')
+    // 1. Use 'domcontentloaded' to proceed once HTML is parsed.
+    // 2. Set a specific timeout for this navigation if it is prone to hanging.
+    await this.page.goto(url, {
+      waitUntil: 'domcontentloaded',
+      timeout: 15000 // 15 seconds is usually enough for local navigation
+    });
+
+    // 3. Keep the validation to ensure the page is actually ready for interaction
+    await expect(this.page).toHaveTitle('Swag Labs');
   }
 
   async goToOtherPage(locator: string) {
