@@ -1,4 +1,3 @@
-
 const config = {
   url: 'https://www.saucedemo.com',
   standard_user: 'standard_user',
