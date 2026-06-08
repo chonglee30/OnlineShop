@@ -202,7 +202,7 @@ Responsibilities:
 - Checkout overview validation
 - Price verification
 - Order completion
-**Note**: Although the checkout process spans multiple screens, the functionality is relatively small and is maintained within a single page object for simplicity and maintainability.  Also, access through CheckoutManager (managers/CheckoutManager.ts)
+**Note**: the checkout process spans multiple screens and access through CheckoutManager (managers/CheckoutManager.ts)
 
 **Page Manager**: The framework uses a centralized Page Manager to instantiate and manage page objects.
 # Benefits:
