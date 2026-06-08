@@ -1,3 +1,4 @@
+// # Author: Chong Lee 
 import { test as setup } from '../fixtures/fixtures';
 import { expect } from '@playwright/test'
 import { LoginPage } from '../pages/LoginPage';
@@ -26,9 +27,8 @@ setup('Authenticate by UI', async ({ config, page }) => {
 
   const state = await page.context().storageState({ path: authFile });
   fs.writeFileSync(authFile, JSON.stringify(state, null, 2), 'utf-8');
-  
-  // Remove this after:
-  console.log('Auth state saved successfully to:', authFile);
-  console.log(require('fs').existsSync(authFile));
-  console.log(JSON.stringify(state, null, 2));
+  // Test:
+  //console.log('Auth state saved successfully to:', authFile);
+  //console.log(require('fs').existsSync(authFile));
+  //console.log(JSON.stringify(state, null, 2));
 });

@@ -1,3 +1,4 @@
+# Author: Chong Lee 
 # End-to-End Testing Strategy for Sauce Demo (saucedemo.com)
 This test plan focuses on the highest-priority user workflows within the application. The selected scenarios represent the most business-critical and user-facing functionality, with emphasis on transaction accuracy, authentication security, and cart management.
 
@@ -293,7 +294,7 @@ The cart badge displaying the current number of items in the cart
   - The first test run does not fail due to missing baseline images.
   - Product image validation remains consistent across different environments and test executions.
 - These snapshots support image verification scenarios, including validation of correct and intentionally incorrect product images for different user types.
-
+# Author: Chong Lee 
 **Test Structure**
 **Authentication Setup**
 **tests/auth.setup.ts**
@@ -344,3 +345,4 @@ The automated test suite is executed across the following browser engines to val
 - WebKit
 
 **NOTE:** Please refer to README.md for prerequisites, installation instructions, environment configuration, and test execution commands.
+# Author: Chong Lee 
