@@ -10,11 +10,13 @@ npm (included with Node.js)
 
 **Test Execution**
 **Run Chromium Tests Only**
-- Execute all tests using the Chromium browser: npm run test:chromium-only
+- Execute all tests using the Chromium browser: 
+# npm run test:chromium-only
 **Run Authentication Tests Only**
-- Execute all authentication and login-related test cases: npm run test:auth-ui
+- Execute all authentication and login-related test cases: 
+# npm run test:auth-ui
 **Run Cart and Checkout Tests**
-Execute tests covering: npm run test:cart
+# npm run test:cart
 - Add items to cart
 - Remove items from cart
 - Cart validation
@@ -22,7 +24,8 @@ Execute tests covering: npm run test:cart
 - Price calculations (subtotal, tax, and total)
 
 **Run All Tests**
-Execute the complete test suite across all configured projects: npm run test:all
+# npm run test:all
+- Execute the complete test suite across all configured projects: 
 
 **Test Reports**
 - After execution, Playwright generates test results and reports.
