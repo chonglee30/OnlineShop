@@ -29,6 +29,10 @@ export class CartPage extends AuthenticatedPage {
     this.inventoryItemPrices = page.locator('[data-test="inventory-item-price"]');
   }
 
+  getCartItems() {
+    return this.cartListItems
+  }
+
   async getCartItemCount(): Promise<number> {
     return await this.cartListItems.count();
   }

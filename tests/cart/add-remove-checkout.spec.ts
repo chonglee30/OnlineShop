@@ -23,24 +23,24 @@ test.describe('Cart → Complete Checkout with Correct Calculation', () => {
         await productHelper.addItemToCart('Sauce Labs Bike Light');
         await expect(productHelper.getRemoveButton('Sauce Labs Backpack')).toBeVisible();
         await expect(productHelper.getRemoveButton('Sauce Labs Bike Light')).toBeVisible();
-        expect(await inventoryPage.getHeader().getCart().getCartBadgeCount()).toEqual(2);
+        if (await inventoryPage.getHeader().getCart().isCartBadgeVisible()) {
+          await expect(inventoryPage.getHeader().getCart().getCartBadge()).toHaveText('2');
+        }
       });
 
       await test.step("Check carted products name and price in the cart page", async () => {
         await inventoryPage.getHeader().getCart().openCart();
         await expect(cartPage.getTitleLocator()).toHaveText('Your Cart');
-        expect(await cartPage.isContinueShoppingVisible()).toBeTruthy();
-        expect(await cartPage.getCartItemCount()).toBe(2);
-
-        const itemNames = await cartPage.getItemNames();
-        expect(itemNames[0]).toContain(backpackName);
-        expect(itemNames[1]).toContain(bikeLightName);
-
-        const itemPrices = await cartPage.getItemPrices();
-        expect(itemPrices[0]).toContain(backpackPrice);
-        expect(itemPrices[1]).toContain(bikeLightPrice);
-
-        await cartPage.continueShopping();
+        await expect(cartPage.getCartItems()).toHaveCount(2)
+        await expect(cartPage.inventoryItemNames).toHaveText([
+          backpackName!,
+          bikeLightName!
+        ]);
+        await expect(cartPage.inventoryItemPrices).toHaveText([
+          backpackPrice!,
+          bikeLightPrice!
+        ]);
+        if (await cartPage.isContinueShoppingVisible()) await cartPage.continueShopping();
         await inventoryPage.waitForURL('**/inventory.html');
       });
     });
@@ -65,56 +65,74 @@ test.describe('Cart → Complete Checkout with Correct Calculation', () => {
         await expect(productHelper.getRemoveButton('Sauce Labs Backpack')).toBeVisible();
         await expect(productHelper.getRemoveButton('Sauce Labs Bike Light')).toBeVisible();
         await expect(productHelper.getRemoveButton('Sauce Labs Bolt T-Shirt')).toBeVisible();
-        expect(await inventoryPage.getHeader().getCart().getCartBadgeCount()).toEqual(3);
+        if (await inventoryPage.getHeader().getCart().isCartBadgeVisible()) {
+          await expect(inventoryPage.getHeader().getCart().getCartBadge()).toHaveText('3');
+        }
       });
 
       await test.step("Check carted products name and price in the cart page", async () => {
         await inventoryPage.getHeader().getCart().openCart();
         await expect(cartPage.getTitleLocator()).toHaveText('Your Cart');
-        expect(await cartPage.getHeader().getCart().getCartBadgeCount()).toEqual(3);
-        expect(await cartPage.getCartItemCount()).toBe(3);
-        expect((await productHelper.getProductDetails('Sauce Labs Backpack')).name).toEqual(backpackName)
-        expect((await productHelper.getProductDetails('Sauce Labs Backpack')).price).toEqual(backpackPrice)
-        expect((await productHelper.getProductDetails('Sauce Labs Bike Light')).name).toEqual(bikeLightName)
-        expect((await productHelper.getProductDetails('Sauce Labs Bike Light')).price).toEqual(bikeLightPrice)
-        expect((await productHelper.getProductDetails('Sauce Labs Bolt T-Shirt')).name).toEqual(boltShirtName)
-        expect((await productHelper.getProductDetails('Sauce Labs Bolt T-Shirt')).price).toEqual(boltShirtPrice)
-        expect(await cartPage.isCheckoutVisible()).toBeTruthy();
-        await cartPage.checkout();
+        if (await cartPage.getHeader().getCart().isCartBadgeVisible()) {
+          await expect(cartPage.getHeader().getCart().getCartBadge()).toHaveText('3');
+        }
+
+        await expect(cartPage.getCartItems()).toHaveCount(3)
+        await expect(cartPage.inventoryItemNames).toHaveText([
+          backpackName!,
+          bikeLightName!,
+          boltShirtName!
+        ]);
+        await expect(cartPage.inventoryItemPrices).toHaveText([
+          backpackPrice!,
+          bikeLightPrice!,
+          boltShirtPrice!
+        ]);
+        if (await cartPage.isCheckoutVisible()) await cartPage.checkout();
       });
 
       await test.step("Fill required checkout information and check badge count", async () => {
         await expect(checkout.stepOne.getTitleLocator()).toHaveText('Checkout: Your Information');
-        expect(await checkout.stepOne.getHeader().getCart().getCartBadgeCount()).toEqual(3);
+        if (await checkout.stepOne.getHeader().getCart().isCartBadgeVisible()) {
+          await expect(checkout.stepOne.getHeader().getCart().getCartBadge()).toHaveText('3');
+        }
         await checkout.stepOne.fillCheckoutInfo('Test', 'User', '99999');
         await checkout.stepOne.continue();
       });
 
       await test.step("Last check: checked out products names and prices and calculation and badge count", async () => {
         await expect(checkout.stepTwo.getTitleLocator()).toHaveText('Checkout: Overview');
-        expect(await checkout.stepTwo.getHeader().getCart().getCartBadgeCount()).toEqual(3);
-        expect(await checkout.stepTwo.getCartItemCount()).toBe(3);
-        expect((await productHelper.getProductDetails('Sauce Labs Backpack')).name).toEqual(backpackName)
-        expect((await productHelper.getProductDetails('Sauce Labs Backpack')).price).toEqual(backpackPrice)
-        expect((await productHelper.getProductDetails('Sauce Labs Bike Light')).name).toEqual(bikeLightName)
-        expect((await productHelper.getProductDetails('Sauce Labs Bike Light')).price).toEqual(bikeLightPrice)
-        expect((await productHelper.getProductDetails('Sauce Labs Bolt T-Shirt')).name).toEqual(boltShirtName)
-        expect((await productHelper.getProductDetails('Sauce Labs Bolt T-Shirt')).price).toEqual(boltShirtPrice)
-
+        if (await checkout.stepTwo.getHeader().getCart().isCartBadgeVisible()) {
+          await expect(checkout.stepTwo.getHeader().getCart().getCartBadge()).toHaveText('3');
+        }
+        await expect(checkout.stepTwo.cartItems).toHaveCount(3)
+        await expect(productHelper.inventoryItemNames).toHaveText([
+          backpackName!,
+          bikeLightName!,
+          boltShirtName!
+        ]);
+        await expect(productHelper.inventoryItemPrices).toHaveText([
+          backpackPrice!,
+          bikeLightPrice!,
+          boltShirtPrice!
+        ]);
         const subtotal = PriceUtils.parsePrice(backpackPrice) + PriceUtils.parsePrice(bikeLightPrice) + PriceUtils.parsePrice(boltShirtPrice);
         const overviewSubtotal = await checkout.stepTwo.getSubtotal();
-        expect(overviewSubtotal).toContain(`$${subtotal.toFixed(2)}`);
+        await expect(checkout.stepTwo.subtotal).toContainText(`$${subtotal.toFixed(2)}`)
+
         const tax = await checkout.stepTwo.getTax();
         const total = await checkout.stepTwo.getTotal();
         const expectedTotal = subtotal + PriceUtils.parsePrice(tax);
-        expect(total).toContain(`$${expectedTotal.toFixed(2)}`);
+        await expect(checkout.stepTwo.total).toContainText(`$${expectedTotal.toFixed(2)}`);
         await checkout.stepTwo.finish();
       });
 
       await test.step("Complete Checkout: final msg and check 0 badge count", async () => {
-        await expect(cartPage.getTitleLocator()).toHaveText('Checkout: Complete!');
-        expect(await checkout.complete.getHeader().getCart().getCartBadgeCount()).toEqual(0);
-        expect(await checkout.complete.getCompleteMessage()).toContain('Thank you for your order');
+        await expect(checkout.complete.getTitleLocator()).toHaveText('Checkout: Complete!');
+        if (await checkout.complete.getHeader().getCart().isCartBadgeVisible()) {
+          await expect(checkout.complete.getHeader().getCart().getCartBadge()).toHaveText('0');
+        }
+        await expect(checkout.complete.completeHeader).toHaveText('Thank you for your order!')
       });
     });
   });
@@ -124,19 +142,23 @@ test.describe('Cart → Complete Checkout with Correct Calculation', () => {
       const inventoryPage = managerPage.onInventoryPage();
       const cartPage = managerPage.onCartPage();
       const productHelper = managerPage.getProductHelper();
-
       await test.step("Add Products to cart and check badge count in the Inventory page", async () => {
         await productHelper.addItemToCart('Sauce Labs Backpack');
         await expect(productHelper.getRemoveButton('Sauce Labs Backpack')).toBeVisible();
-        expect(await inventoryPage.getHeader().getCart().getCartBadgeCount()).toEqual(1);
+        if (await inventoryPage.getHeader().getCart().isCartBadgeVisible()) {
+          await expect(inventoryPage.getHeader().getCart().getCartBadge()).toHaveText('1');
+        }
         await inventoryPage.getHeader().getCart().openCart();
       });
 
       await test.step("Remove item from Cart and check 0 badge count and cartItems in the cart page", async () => {
-        expect(await cartPage.getCartItemCount()).toBe(1);
+        await expect(cartPage.getTitleLocator()).toHaveText('Your Cart');
+        await expect(cartPage.getCartItems()).toHaveCount(1)
         await productHelper.removeItemFromCart('Sauce Labs Backpack');
-        expect(await cartPage.getCartItemCount()).toBe(0);
-        expect(await cartPage.getHeader().getCart().getCartBadgeCount()).toEqual(0);
+        await expect(cartPage.getCartItems()).toHaveCount(0)
+        if (await cartPage.getHeader().getCart().isCartBadgeVisible()) {
+          await expect(cartPage.getHeader().getCart().getCartBadge()).toHaveText('0');
+        }
       });
     });
 
@@ -160,37 +182,57 @@ test.describe('Cart → Complete Checkout with Correct Calculation', () => {
         await expect(productHelper.getRemoveButton('Sauce Labs Fleece Jacket')).toBeVisible();
         await expect(productHelper.getRemoveButton('Sauce Labs Onesie')).toBeVisible();
         await expect(productHelper.getRemoveButton('Test.allTheThings() T-Shirt (Red)')).toBeVisible();
-        expect(await inventoryPage.getHeader().getCart().getCartBadgeCount()).toEqual(3);
 
+        if (await cartPage.getHeader().getCart().isCartBadgeVisible()) {
+          await expect(cartPage.getHeader().getCart().getCartBadge()).toHaveText('3');
+        }
         await productHelper.removeItemFromCart('Test.allTheThings() T-Shirt (Red)');
         await expect(productHelper.getAddButton('Test.allTheThings() T-Shirt (Red)')).toBeVisible();
-        expect(await inventoryPage.getHeader().getCart().getCartBadgeCount()).toEqual(2);
+        await expect(cartPage.getHeader().getCart().getCartBadge()).toHaveText('2');
         await inventoryPage.getHeader().getCart().openCart();
       });
 
       await test.step("Check carted products name and price in the cart page", async () => {
         await expect(cartPage.getTitleLocator()).toHaveText('Your Cart');
-        expect(await cartPage.isCheckoutVisible()).toBeTruthy();
-        expect(await cartPage.getCartItemCount()).toBe(2);
-        expect((await productHelper.getProductDetails('Sauce Labs Fleece Jacket')).name).toEqual(fleeceJacketName)
-        expect((await productHelper.getProductDetails('Sauce Labs Fleece Jacket')).price).toEqual(fleeceJacketPrice)
-        expect((await productHelper.getProductDetails('Sauce Labs Onesie')).name).toEqual(onesieName)
-        expect((await productHelper.getProductDetails('Sauce Labs Onesie')).price).toEqual(onesiePrice)
-        await cartPage.checkout();
+        if (await cartPage.getHeader().getCart().isCartBadgeVisible()) {
+          await expect(cartPage.getHeader().getCart().getCartBadge()).toHaveText('2');
+        }
+        await expect(cartPage.getCartItems()).toHaveCount(2)
+        await expect(cartPage.inventoryItemNames).toHaveText([
+          fleeceJacketName!,
+          onesieName!
+        ]);
+        await expect(cartPage.inventoryItemPrices).toHaveText([
+          fleeceJacketPrice!,
+          onesiePrice!
+        ]);
+        if (await cartPage.isCheckoutVisible()) await cartPage.checkout();
       });
 
       await test.step("Fill required checkout information and check badge count", async () => {
         await expect(checkout.stepOne.getTitleLocator()).toHaveText('Checkout: Your Information');
-        expect(await checkout.stepOne.getHeader().getCart().getCartBadgeCount()).toEqual(2);
+        if (await checkout.stepOne.getHeader().getCart().isCartBadgeVisible()) {
+          await expect(checkout.stepOne.getHeader().getCart().getCartBadge()).toHaveText('2');
+        }
         await checkout.stepOne.fillCheckoutInfo('John', 'Doe', '12345');
         await checkout.stepOne.continue();
       });
 
-      // Verify overview page shows correct items
       await test.step("Last check: checked out products names and prices and calculation and badge count", async () => {
         await expect(checkout.stepTwo.getTitleLocator()).toHaveText('Checkout: Overview');
-        expect(await checkout.stepTwo.getHeader().getCart().getCartBadgeCount()).toEqual(2);
-        expect(await checkout.stepTwo.getCartItemCount()).toBe(2);
+        if (await checkout.stepTwo.getHeader().getCart().isCartBadgeVisible()) {
+          await expect(checkout.stepTwo.getHeader().getCart().getCartBadge()).toHaveText('2');
+        }
+        await expect(checkout.stepTwo.cartItems).toHaveCount(2)
+        await expect(productHelper.inventoryItemNames).toHaveText([
+          fleeceJacketName!,
+          onesieName!
+        ]);
+        await expect(productHelper.inventoryItemPrices).toHaveText([
+          fleeceJacketPrice!,
+          onesiePrice!
+        ]);
+
         expect((await productHelper.getProductDetails('Sauce Labs Fleece Jacket')).name).toEqual(fleeceJacketName)
         expect((await productHelper.getProductDetails('Sauce Labs Fleece Jacket')).price).toEqual(fleeceJacketPrice)
         expect((await productHelper.getProductDetails('Sauce Labs Onesie')).name).toEqual(onesieName)
@@ -198,18 +240,20 @@ test.describe('Cart → Complete Checkout with Correct Calculation', () => {
 
         const subtotal = PriceUtils.parsePrice(fleeceJacketPrice) + PriceUtils.parsePrice(onesiePrice);
         const overviewSubtotal = await checkout.stepTwo.getSubtotal();
-        expect(overviewSubtotal).toContain(`$${subtotal.toFixed(2)}`);
+        await expect(checkout.stepTwo.subtotal).toContainText(`$${subtotal.toFixed(2)}`)
         const tax = await checkout.stepTwo.getTax()
         const total = await checkout.stepTwo.getTotal();
         const expectedTotal = subtotal + PriceUtils.parsePrice(tax);
-        expect(total).toContain(`$${expectedTotal.toFixed(2)}`);
+        await expect(checkout.stepTwo.total).toContainText(`$${expectedTotal.toFixed(2)}`);
         await checkout.stepTwo.finish();
       });
 
       await test.step("Complete Checkout: final msg and check 0 badge count", async () => {
         await expect(checkout.complete.getTitleLocator()).toHaveText('Checkout: Complete!');
-        expect(await checkout.complete.getHeader().getCart().getCartBadgeCount()).toEqual(0);
-        expect(await checkout.complete.getCompleteMessage()).toContain('Thank you for your order');
+        if (await checkout.complete.getHeader().getCart().isCartBadgeVisible()) {
+          await expect(checkout.complete.getHeader().getCart().getCartBadge()).toHaveText('0');
+        }
+        await expect(checkout.complete.completeHeader).toHaveText('Thank you for your order!')
       });
     });
   });

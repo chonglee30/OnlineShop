@@ -3,8 +3,12 @@ import { ProductInfo } from '../interfaces/Product';
 
 export class ProductHelper {
   private readonly page: Page;
+  readonly inventoryItemNames: Locator;
+  readonly inventoryItemPrices: Locator;
   constructor(page: Page) {
     this.page = page;
+    this.inventoryItemNames = page.locator('[data-test="inventory-item-name"]');
+    this.inventoryItemPrices = page.locator('[data-test="inventory-item-price"]');
   }
 
   async getProductDetails(name: string): Promise<ProductInfo> {

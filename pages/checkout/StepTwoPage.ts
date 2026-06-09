@@ -7,7 +7,7 @@ export class StepTwoPage extends AuthenticatedPage {
   readonly cartItems: Locator;
   readonly subtotal: Locator;
   readonly tax: Locator;
-  readonly total: Locator;;
+  readonly total: Locator;
   readonly finishButton: Locator;
   readonly cancelButton: Locator;
 

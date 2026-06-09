@@ -21,6 +21,10 @@ export class CartComponent {
     await this.shoppingCartLink.click();
   }
 
+  getCartBadge(): Locator {
+    return this.shoppingCartBadge;
+  }
+
   async getCartBadgeCount(): Promise<number> {
     if (!(await this.shoppingCartBadge.isVisible())) return 0;
     const text = await this.shoppingCartBadge.textContent();
