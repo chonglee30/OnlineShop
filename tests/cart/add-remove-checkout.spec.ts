@@ -32,11 +32,11 @@ test.describe('Cart → Complete Checkout with Correct Calculation', () => {
         await inventoryPage.getHeader().getCart().openCart();
         await expect(cartPage.getTitleLocator()).toHaveText('Your Cart');
         await expect(cartPage.getCartItems()).toHaveCount(2)
-        await expect(cartPage.inventoryItemNames).toHaveText([
+        await expect(productHelper.inventoryItemNames).toHaveText([
           backpackName!,
           bikeLightName!
         ]);
-        await expect(cartPage.inventoryItemPrices).toHaveText([
+        await expect(productHelper.inventoryItemPrices).toHaveText([
           backpackPrice!,
           bikeLightPrice!
         ]);
@@ -78,12 +78,23 @@ test.describe('Cart → Complete Checkout with Correct Calculation', () => {
         }
 
         await expect(cartPage.getCartItems()).toHaveCount(3)
-        await expect(cartPage.inventoryItemNames).toHaveText([
+        // await expect(cartPage.inventoryItemNames).toHaveText([
+        //   backpackName!,
+        //   bikeLightName!,
+        //   boltShirtName!
+        // ]);
+        // await expect(cartPage.inventoryItemPrices).toHaveText([
+        //   backpackPrice!,
+        //   bikeLightPrice!,
+        //   boltShirtPrice!
+        // ]);
+
+        await expect(productHelper.inventoryItemNames).toHaveText([
           backpackName!,
           bikeLightName!,
           boltShirtName!
         ]);
-        await expect(cartPage.inventoryItemPrices).toHaveText([
+        await expect(productHelper.inventoryItemPrices).toHaveText([
           backpackPrice!,
           bikeLightPrice!,
           boltShirtPrice!
@@ -198,14 +209,24 @@ test.describe('Cart → Complete Checkout with Correct Calculation', () => {
           await expect(cartPage.getHeader().getCart().getCartBadge()).toHaveText('2');
         }
         await expect(cartPage.getCartItems()).toHaveCount(2)
-        await expect(cartPage.inventoryItemNames).toHaveText([
+        // await expect(cartPage.inventoryItemNames).toHaveText([
+        //   fleeceJacketName!,
+        //   onesieName!
+        // ]);
+        // await expect(cartPage.inventoryItemPrices).toHaveText([
+        //   fleeceJacketPrice!,
+        //   onesiePrice!
+        // ]);
+
+        await expect(productHelper.inventoryItemNames).toHaveText([
           fleeceJacketName!,
           onesieName!
         ]);
-        await expect(cartPage.inventoryItemPrices).toHaveText([
+        await expect(productHelper.inventoryItemPrices).toHaveText([
           fleeceJacketPrice!,
           onesiePrice!
         ]);
+
         if (await cartPage.isCheckoutVisible()) await cartPage.checkout();
       });
 

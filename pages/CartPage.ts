@@ -11,10 +11,6 @@ export class CartPage extends AuthenticatedPage {
   readonly continueShoppingButton: Locator;
   readonly itemQuantities: Locator;
 
-  // Item details
-  readonly inventoryItemNames: Locator;
-  readonly inventoryItemPrices: Locator;
-
   constructor(page: Page) {
     super(page);
     this.cartItems = page.locator('[data-test="cart-item"]');
@@ -23,10 +19,6 @@ export class CartPage extends AuthenticatedPage {
     this.checkoutButton = page.getByRole('button', { name: 'Checkout' });
     this.continueShoppingButton = page.getByRole('button', { name: 'Continue Shopping' });
     this.itemQuantities = page.locator('[data-test="item-quantity"]');
-
-    // Item details
-    this.inventoryItemNames = page.locator('[data-test="inventory-item-name"]');
-    this.inventoryItemPrices = page.locator('[data-test="inventory-item-price"]');
   }
 
   getCartItems() {
@@ -51,13 +43,5 @@ export class CartPage extends AuthenticatedPage {
 
   async isContinueShoppingVisible(): Promise<boolean> {
     return await this.continueShoppingButton.isVisible();
-  }
-
-  async getItemNames(): Promise<string[]> {
-    return await this.inventoryItemNames.allTextContents();
-  }
-
-  async getItemPrices(): Promise<string[]> {
-    return await this.inventoryItemPrices.allTextContents();
   }
 }
