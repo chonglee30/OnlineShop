@@ -4,6 +4,9 @@ on:
     branches: [ main, master ]
   pull_request:
     branches: [ main, master ]
+  # Trigger nightly at 8:00 UTC corresponds to 1:00 AM (Pacific Daylight Time).
+  schedule:
+    - cron: '0 8 * * *'         
 jobs:
   test:
     timeout-minutes: 60
@@ -21,6 +24,17 @@ jobs:
       run: |
         echo "Current time in UTC: $(date -u '+%Y-%m-%d %H:%M:%S UTC')"
         echo "Current time in PDT: $(TZ='America/Los_Angeles' date '+%Y-%m-%d %H:%M:%S PDT')"       
+    - name: Determine Playwright Test Name
+      id: set_test_name
+      run: |
+        # 1. Check the event name
+        if [[ "${{ github.event_name }}" == "schedule" ]]; then
+          echo "TEST_NAME=all" >> $GITHUB_ENV
+          echo "Running all projects for nightly schedule running event" 
+        else 
+          echo "TEST_NAME=chromium-only" >> $GITHUB_ENV 
+          echo "Running with only chromium browser"
+        fi              
     - name: Build and run Docker Compose
       run: |
         docker compose up --build --abort-on-container-exit
