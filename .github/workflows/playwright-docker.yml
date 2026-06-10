@@ -1,0 +1,32 @@
+name: Playwright Tests
+on:
+  push:
+    branches: [ main, master ]
+  pull_request:
+    branches: [ main, master ]
+jobs:
+  test:
+    timeout-minutes: 60
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout  
+      uses: actions/checkout@v5
+    - name: Set up Docker Buildx
+      uses: docker/setup-buildx-action@v4
+    - name: Verify Docker Compose (optional, for debugging)
+      run: |
+        docker --version
+        docker compose version # Verify 'docker compose' version 
+    - name: Show local time (for reference)
+      run: |
+        echo "Current time in UTC: $(date -u '+%Y-%m-%d %H:%M:%S UTC')"
+        echo "Current time in PDT: $(TZ='America/Los_Angeles' date '+%Y-%m-%d %H:%M:%S PDT')"       
+    - name: Build and run Docker Compose
+      run: |
+        docker compose up --build --abort-on-container-exit
+    - uses: actions/upload-artifact@v4
+      if: always()
+      with:
+        name: playwright-report
+        path: playwright-report/
+        retention-days: 15
