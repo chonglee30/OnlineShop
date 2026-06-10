@@ -6,7 +6,18 @@ on:
     branches: [ main, master ]
   # Trigger nightly at 8:00 UTC corresponds to 1:00 AM (Pacific Daylight Time).
   schedule:
-    - cron: '0 8 * * *'         
+    - cron: '0 8 * * *'
+  workflow_dispatch:
+    inputs:
+      browser:
+        type: choice
+        description: Which tests to run
+        required: true
+        options:
+          - chromium-only
+          - all
+          - auth-ui
+          - cart           
 jobs:
   test:
     timeout-minutes: 60
@@ -30,10 +41,13 @@ jobs:
         # 1. Check the event name
         if [[ "${{ github.event_name }}" == "schedule" ]]; then
           echo "TEST_NAME=all" >> $GITHUB_ENV
-          echo "Running all projects for nightly schedule running event" 
+          echo "Nightly schedule detected: Running all tests." 
+        elif [[ "${{ github.event_name }}" == "workflow_dispatch" ]]; then
+          echo "TEST_NAME=${{ github.event.inputs.browser }}" >> $GITHUB_ENV
+          echo "Manual trigger detected: Running ${{ github.event.inputs.browser }} suite."  
         else 
           echo "TEST_NAME=chromium-only" >> $GITHUB_ENV 
-          echo "Running with only chromium browser"
+          echo "Push event detected: Running chromium-only smoke test."
         fi              
     - name: Build and run Docker Compose
       run: |
