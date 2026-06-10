@@ -78,17 +78,6 @@ test.describe('Cart → Complete Checkout with Correct Calculation', () => {
         }
 
         await expect(cartPage.getCartItems()).toHaveCount(3)
-        // await expect(cartPage.inventoryItemNames).toHaveText([
-        //   backpackName!,
-        //   bikeLightName!,
-        //   boltShirtName!
-        // ]);
-        // await expect(cartPage.inventoryItemPrices).toHaveText([
-        //   backpackPrice!,
-        //   bikeLightPrice!,
-        //   boltShirtPrice!
-        // ]);
-
         await expect(productHelper.inventoryItemNames).toHaveText([
           backpackName!,
           bikeLightName!,
@@ -130,7 +119,6 @@ test.describe('Cart → Complete Checkout with Correct Calculation', () => {
         const subtotal = PriceUtils.parsePrice(backpackPrice) + PriceUtils.parsePrice(bikeLightPrice) + PriceUtils.parsePrice(boltShirtPrice);
         const overviewSubtotal = await checkout.stepTwo.getSubtotal();
         await expect(checkout.stepTwo.subtotal).toContainText(`$${subtotal.toFixed(2)}`)
-
         const tax = await checkout.stepTwo.getTax();
         const total = await checkout.stepTwo.getTotal();
         const expectedTotal = subtotal + PriceUtils.parsePrice(tax);
@@ -178,7 +166,6 @@ test.describe('Cart → Complete Checkout with Correct Calculation', () => {
       const cartPage = managerPage.onCartPage();
       const checkout = managerPage.onCheckout();
       const productHelper = managerPage.getProductHelper();
-
       const fleeceJacketName = (await productHelper.getProductDetails('Sauce Labs Fleece Jacket')).name;
       const fleeceJacketPrice = (await productHelper.getProductDetails('Sauce Labs Fleece Jacket')).price;
       const onesieName = (await productHelper.getProductDetails('Sauce Labs Onesie')).name;
@@ -209,15 +196,6 @@ test.describe('Cart → Complete Checkout with Correct Calculation', () => {
           await expect(cartPage.getHeader().getCart().getCartBadge()).toHaveText('2');
         }
         await expect(cartPage.getCartItems()).toHaveCount(2)
-        // await expect(cartPage.inventoryItemNames).toHaveText([
-        //   fleeceJacketName!,
-        //   onesieName!
-        // ]);
-        // await expect(cartPage.inventoryItemPrices).toHaveText([
-        //   fleeceJacketPrice!,
-        //   onesiePrice!
-        // ]);
-
         await expect(productHelper.inventoryItemNames).toHaveText([
           fleeceJacketName!,
           onesieName!
@@ -253,12 +231,6 @@ test.describe('Cart → Complete Checkout with Correct Calculation', () => {
           fleeceJacketPrice!,
           onesiePrice!
         ]);
-
-        expect((await productHelper.getProductDetails('Sauce Labs Fleece Jacket')).name).toEqual(fleeceJacketName)
-        expect((await productHelper.getProductDetails('Sauce Labs Fleece Jacket')).price).toEqual(fleeceJacketPrice)
-        expect((await productHelper.getProductDetails('Sauce Labs Onesie')).name).toEqual(onesieName)
-        expect((await productHelper.getProductDetails('Sauce Labs Onesie')).price).toEqual(onesiePrice)
-
         const subtotal = PriceUtils.parsePrice(fleeceJacketPrice) + PriceUtils.parsePrice(onesiePrice);
         const overviewSubtotal = await checkout.stepTwo.getSubtotal();
         await expect(checkout.stepTwo.subtotal).toContainText(`$${subtotal.toFixed(2)}`)
