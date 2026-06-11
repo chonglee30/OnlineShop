@@ -12,7 +12,7 @@ export class LoginPage extends BasePage {
 
   constructor(page: Page) {
     super(page);
-    this.logo = new Logo(this.page.locator('.login_logo'));
+    this.logo = new Logo(this.page.getByText('Swag Labs'));
     this.usernameInput = page.getByPlaceholder('Username');
     this.passwordInput = page.getByPlaceholder('Password');
     this.loginButton = page.getByRole('button', { name: 'Login' });
