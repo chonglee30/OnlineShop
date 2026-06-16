@@ -5,7 +5,7 @@ import { PriceUtils } from '../../utils/price-utils';
 test.describe('Cart → Complete Checkout with Correct Calculation', () => {
   test.beforeEach(async ({ config, managerPage }) => {
     await managerPage.onLoginPage().goToOtherPage(config.url + '/inventory.html');
-  })
+  });
 
   test.describe('Add to Cart → Complete Checkout with Correct Calculation', () => {
     test('Correct Badge count and verify correct number of added items and products', async ({ managerPage }) => {

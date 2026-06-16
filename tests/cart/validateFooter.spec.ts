@@ -1,0 +1,24 @@
+import { expect } from '@playwright/test';
+import { test } from '../../fixtures/fixtures';
+import { SOCIAL_LINKS } from '../../constants/socialLinks';
+
+test.describe('Footer Link Year Validation', () => {
+  test.beforeEach(async ({ config, managerPage }) => {
+    await managerPage.onLoginPage().goToOtherPage(config.url + '/inventory.html');
+  });
+
+  test('Verify all social links and current year', async ({ managerPage }) => {
+    const inventoryPage = managerPage.onInventoryPage();
+    const cartPage = managerPage.onCartPage();
+    const checkout = managerPage.onCheckout();
+
+    await inventoryPage.footer.expectCurrentYear();
+
+    for (const link of SOCIAL_LINKS) {
+      const currentPage = await inventoryPage.footer.openSocialLink(link.name)
+      await currentPage.close();
+    }
+
+    // Try all other pages
+  });
+});
