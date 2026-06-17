@@ -44,43 +44,18 @@ export default defineConfig({
     { name: 'setup', testMatch: /.*\.setup\.ts/ },
     {
       name: 'chromium',
-      use: {
-        ...devices['Desktop Chrome']
-      },
-      testDir: './tests/login', // Scopes this project to the login folder
-    },
-
-    {
-      name: 'chromium-auth',
       use: { ...devices['Desktop Chrome'], storageState: './.auth/user.json' },
-      testDir: './tests/cart', // Scopes this project to the cart folder
       dependencies: ['setup']
     },
-
-    {
-      name: 'firefox-auth',
-      use: { ...devices['Desktop Firefox'], storageState: './.auth/user.json' },
-      testDir: './tests/cart', // Scopes this project to the cart folder
-      dependencies: ['setup']
-    },
-
     {
       name: 'firefox',
-      use: { ...devices['Desktop Firefox'] },
-      testDir: './tests/login', // Scopes this project to the login folder
-    },
-
-    {
-      name: 'webkit-auth',
-      use: { ...devices['Desktop Safari'], storageState: './.auth/user.json' },
-      testDir: './tests/cart', // Scopes this project to the cart folder
+      use: { ...devices['Desktop Firefox'], storageState: './.auth/user.json' },
       dependencies: ['setup']
     },
-
     {
       name: 'webkit',
-      use: { ...devices['Desktop Safari'] },
-      testDir: './tests/login', // Scopes this project to the login folder
+      use: { ...devices['Desktop Safari'], storageState: './.auth/user.json' },
+      dependencies: ['setup']
     },
 
     /* Test against mobile viewports. */

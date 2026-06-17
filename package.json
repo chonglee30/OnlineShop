@@ -5,9 +5,7 @@
   "main": "index.js",
   "scripts": {
     "test:all": "npx playwright test --workers=1",
-    "test:auth-ui": "npx playwright test --project=chromium --project=firefox --project=webkit",
-    "test:cart": "npx playwright test --project=chromium-auth --project=firefox-auth --project=webkit-auth",
-    "test:chromium-only": "npx playwright test --project=chromium --project=chromium-auth"
+    "test:chromium-only": "npx playwright test --project=chromium"
   },
   "repository": {
     "type": "git",

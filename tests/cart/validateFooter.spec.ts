@@ -7,18 +7,15 @@ test.describe('Footer Link Year Validation', () => {
     await managerPage.onLoginPage().goToOtherPage(config.url + '/inventory.html');
   });
 
-  test('Verify all social links and current year', async ({ managerPage }) => {
+  test('Validate all social media links and the current year displayed on the Inventory page.', async ({ managerPage }) => {
     const inventoryPage = managerPage.onInventoryPage();
     const cartPage = managerPage.onCartPage();
     const checkout = managerPage.onCheckout();
 
     await inventoryPage.footer.expectCurrentYear();
-
     for (const link of SOCIAL_LINKS) {
       const currentPage = await inventoryPage.footer.openSocialLink(link.name)
       await currentPage.close();
     }
-
-    // Try all other pages
   });
 });

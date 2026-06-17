@@ -16,8 +16,6 @@ on:
         options:
           - chromium-only
           - all
-          - auth-ui
-          - cart           
 jobs:
   test:
     timeout-minutes: 60

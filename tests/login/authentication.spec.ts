@@ -5,6 +5,8 @@ import { InventoryPage } from '../../pages/InventoryPage';
 
 const INVALID_PASSWORD = 'wrong_password';
 
+test.use({ storageState: { cookies: [], origins: [] } }); // doesn't share the logged in session
+
 test.describe('Authentication (Login)', () => {
   test.beforeEach(async ({ config, page }) => {
     const loginPage = new LoginPage(page);

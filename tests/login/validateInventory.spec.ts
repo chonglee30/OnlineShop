@@ -3,6 +3,8 @@ import { test } from '../../fixtures/fixtures';
 import { LoginPage } from '../../pages/LoginPage';
 import { InventoryPage } from '../../pages/InventoryPage';
 
+test.use({ storageState: { cookies: [], origins: [] } }); // doesn't share the logged in session
+
 test.describe('Authentication (Login)', () => {
   test.beforeEach(async ({ config, page }) => {
     const loginPage = new LoginPage(page);
