@@ -18,4 +18,21 @@ test.describe('Footer Link Year Validation', () => {
       await currentPage.close();
     }
   });
+
+  test('Validate Header Layout displayed on the Inventory page.', async ({ managerPage }) => {
+    const inventoryPage = managerPage.onInventoryPage();
+    await expect(inventoryPage.header.getBurgerMenu().reactBtnMenu).toMatchAriaSnapshot(`- button "Open Menu"`);
+    await inventoryPage.header.getBurgerMenu().reactBtnMenu.click()
+    await expect(inventoryPage.header.getBurgerMenu().menuContainer).toMatchAriaSnapshot(`
+       - navigation:
+         - link "All Items":
+           - /url: "#"
+         - link "About":
+           - /url: https://saucelabs.com/
+         - link "Logout":
+           - /url: "#"
+         - link "Reset App State":
+           - /url: "#"
+    `)
+  });
 });

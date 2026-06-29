@@ -31,7 +31,7 @@ export class Footer {
     await expect(newPage).toHaveURL(expectedUrl);
     return newPage;
   }
-  
+
   async scrollToFooter(): Promise<void> {
     await this.footerContainer.scrollIntoViewIfNeeded();
   }
@@ -44,5 +44,5 @@ export class Footer {
     const currentYear = new Date().getFullYear().toString();
     await this.scrollToFooter()
     await expect(this.copyrightText).toContainText(currentYear);
-  }
+  }  
 }

@@ -4,6 +4,7 @@ import { Locator, Page, expect } from '@playwright/test';
 import { BurgerMenu } from './BurgerMenu';
 import { CartComponent } from './CartComponent';
 import { Logo } from './Logo';
+import { promises } from 'node:dns';
 
 export class Header {
   private readonly burgerMenu: BurgerMenu;
@@ -28,4 +29,20 @@ export class Header {
   getLogo(): Logo {
     return this.logo;
   }
+
+  async verifyMenu(): Promise<void>  {
+    await expect(this.burgerMenu.menuContainer).toMatchAriaSnapshot(`
+      - button "Open Menu"
+      `);
+  }
 }
+
+// - navigation:
+      //     - link "All Items":
+      //         - /url: "#"
+      //     - link "About":
+      //         - /url: https://saucelabs.com/
+      //     - link "Logout":
+      //         - /url: "#"
+      //     - link "Reset App State":
+      //         - /url: "#"

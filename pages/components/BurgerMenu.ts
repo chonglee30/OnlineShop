@@ -6,12 +6,16 @@ export class BurgerMenu {
   readonly menuBtn: Locator;
   readonly aboutLink: Locator;
   readonly logoutLink: Locator;
+  readonly reactBtnMenu: Locator;
+  readonly menuContainer: Locator;
 
   constructor(page: Page) {
     this.page = page;
-    this.menuBtn = page.locator('#react-burger-menu-btn');
+    this.menuBtn = page.getByRole('button', { name: 'Open Menu' });
     this.aboutLink = page.locator('#about_sidebar_link');
     this.logoutLink = page.locator('#logout_sidebar_link');
+    this.reactBtnMenu = page.locator('#react-burger-menu-btn')
+    this.menuContainer = page.locator('#menu_button_container')
   }
 
   async open(): Promise<void> {
